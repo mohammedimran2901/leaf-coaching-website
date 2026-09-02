@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { ArrowRight, Check } from 'lucide-react'
+import FAQ from '../components/FAQ'
 
 const services = [
   {
@@ -108,6 +109,8 @@ export default function ServicesPage() {
           ))}
         </div>
       </section>
+
+      <FAQ />
     </main>
   )
 }

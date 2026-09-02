@@ -1,5 +1,7 @@
 'use client'
-import { motion } from 'framer-motion'
+import { useCallback, useEffect, useState } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { ArrowLeft, ArrowRight, Quote } from 'lucide-react'
 
 const testimonials = [
   {
@@ -19,7 +21,25 @@ const testimonials = [
   },
 ]
 
+const AUTOPLAY_MS = 6000
+
 export default function Testimonials() {
+  const [index, setIndex] = useState(0)
+  const [paused, setPaused] = useState(false)
+
+  const go = useCallback(
+    (dir: number) => setIndex((i) => (i + dir + testimonials.length) % testimonials.length),
+    []
+  )
+
+  useEffect(() => {
+    if (paused) return
+    const id = setInterval(() => go(1), AUTOPLAY_MS)
+    return () => clearInterval(id)
+  }, [paused, go])
+
+  const t = testimonials[index]
+
   return (
     <section className="bg-forest text-sand section-padding relative overflow-hidden">
       {/* soft glow */}
@@ -42,32 +62,78 @@ export default function Testimonials() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: '-80px' }}
           transition={{ duration: 0.8, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
-          className="text-4xl md:text-5xl font-serif mb-16 md:mb-20 max-w-2xl leading-tight"
+          className="text-4xl md:text-5xl font-serif mb-14 md:mb-16 max-w-2xl leading-tight"
         >
           Kind words from our <em className="italic text-clay-light">community</em>
         </motion.h2>
 
-        <div className="grid md:grid-cols-3 gap-10 md:gap-8">
-          {testimonials.map((t, i) => (
-            <motion.figure
-              key={i}
-              initial={{ opacity: 0, y: 32 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: '-60px' }}
-              transition={{ duration: 0.8, delay: i * 0.15, ease: [0.22, 1, 0.36, 1] }}
-              className="border-t border-sand/20 pt-8"
-            >
-              <span className="font-serif text-4xl text-clay-light leading-none block mb-4">
-                &ldquo;
-              </span>
-              <blockquote className="text-lg leading-relaxed text-sand/90">
-                {t.quote}
-              </blockquote>
-              <figcaption className="mt-6 text-sm uppercase tracking-widest2 text-sand/50">
-                {t.author}
-              </figcaption>
-            </motion.figure>
-          ))}
+        <div
+          className="max-w-3xl"
+          onMouseEnter={() => setPaused(true)}
+          onMouseLeave={() => setPaused(false)}
+        >
+          {/* Quote */}
+          <div className="relative min-h-[12rem] md:min-h-[10rem]">
+            <Quote
+              className="absolute -top-2 -left-2 w-10 h-10 text-clay/30"
+              aria-hidden
+            />
+            <AnimatePresence mode="wait">
+              <motion.figure
+                key={index}
+                initial={{ opacity: 0, y: 24 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -24 }}
+                transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+                className="pt-10"
+              >
+                <blockquote className="font-serif text-2xl md:text-4xl leading-snug text-sand">
+                  {t.quote}
+                </blockquote>
+                <figcaption className="mt-6 text-sm uppercase tracking-widest2 text-sand/50">
+                  — {t.author}
+                </figcaption>
+              </motion.figure>
+            </AnimatePresence>
+          </div>
+
+          {/* Controls */}
+          <div className="mt-10 flex items-center justify-between border-t border-sand/15 pt-6">
+            <div className="flex gap-3">
+              {testimonials.map((_, i) => (
+                <button
+                  key={i}
+                  aria-label={`Show testimonial ${i + 1}`}
+                  onClick={() => setIndex(i)}
+                  className="group py-2"
+                >
+                  <span
+                    className={`block h-1 rounded-full transition-all duration-500 ease-soft ${
+                      i === index
+                        ? 'w-10 bg-clay-light'
+                        : 'w-4 bg-sand/25 group-hover:bg-sand/50'
+                    }`}
+                  />
+                </button>
+              ))}
+            </div>
+            <div className="flex gap-3">
+              <button
+                aria-label="Previous testimonial"
+                onClick={() => go(-1)}
+                className="w-11 h-11 rounded-full border border-sand/25 flex items-center justify-center text-sand/70 transition-all duration-500 ease-soft hover:border-clay-light hover:text-clay-light hover:-translate-x-0.5"
+              >
+                <ArrowLeft className="w-4 h-4" />
+              </button>
+              <button
+                aria-label="Next testimonial"
+                onClick={() => go(1)}
+                className="w-11 h-11 rounded-full border border-sand/25 flex items-center justify-center text-sand/70 transition-all duration-500 ease-soft hover:border-clay-light hover:text-clay-light hover:translate-x-0.5"
+              >
+                <ArrowRight className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </section>

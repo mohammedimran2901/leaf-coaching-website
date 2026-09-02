@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { Fraunces, Manrope } from 'next/font/google'
+import BackToTop from './components/BackToTop'
 import './globals.css'
 
 const serif = Fraunces({
@@ -42,7 +43,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en-GB" className={`${serif.variable} ${sans.variable}`}>
-      <body>{children}</body>
+      <body>
+        {children}
+        <BackToTop />
+      </body>
     </html>
   )
 }

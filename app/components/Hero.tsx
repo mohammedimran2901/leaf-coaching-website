@@ -1,5 +1,6 @@
 'use client'
-import { motion } from 'framer-motion'
+import { useRef } from 'react'
+import { motion, useMotionValue, useScroll, useSpring, useTransform } from 'framer-motion'
 import { ArrowRight, ArrowUpRight } from 'lucide-react'
 
 const fade = {
@@ -12,23 +13,61 @@ const fade = {
 }
 
 export default function Hero() {
+  const sectionRef = useRef<HTMLElement>(null)
+  const mx = useMotionValue(0)
+  const my = useMotionValue(0)
+  const leafX = useSpring(useTransform(mx, [-1, 1], [-30, 30]), { stiffness: 50, damping: 20 })
+  const leafY = useSpring(useTransform(my, [-1, 1], [-20, 20]), { stiffness: 50, damping: 20 })
+  const blobX = useSpring(useTransform(mx, [-1, 1], [20, -20]), { stiffness: 40, damping: 20 })
+
+  const handleMouse = (e: React.MouseEvent) => {
+    const rect = sectionRef.current?.getBoundingClientRect()
+    if (!rect) return
+    mx.set(((e.clientX - rect.left) / rect.width) * 2 - 1)
+    my.set(((e.clientY - rect.top) / rect.height) * 2 - 1)
+  }
+
+  const { scrollYProgress: heroScroll } = useScroll({
+    target: sectionRef,
+    offset: ['start start', 'end start'],
+  })
+  const contentOpacity = useTransform(heroScroll, [0, 0.6], [1, 0])
+  const contentY = useTransform(heroScroll, [0, 1], [0, 80])
+
   return (
-    <section className="relative min-h-screen flex items-center overflow-hidden bg-sand">
+    <section
+      ref={sectionRef}
+      onMouseMove={handleMouse}
+      className="relative min-h-screen flex items-center overflow-hidden bg-sand"
+    >
       {/* Organic background accents */}
       <div className="pointer-events-none absolute inset-0" aria-hidden>
-        <div className="absolute -top-32 -right-40 w-[36rem] h-[36rem] rounded-full bg-clay/10 blur-3xl" />
-        <div className="absolute bottom-[-12rem] -left-40 w-[30rem] h-[30rem] rounded-full bg-forest/10 blur-3xl" />
-        {/* Oversized ghost leaf */}
-        <svg
+        <motion.div
+          style={{ x: blobX }}
+          className="absolute -top-32 -right-40 w-[36rem] h-[36rem] rounded-full bg-clay/10 blur-3xl"
+        />
+        <motion.div
+          animate={{ y: [0, 18, 0] }}
+          transition={{ duration: 9, repeat: Infinity, ease: 'easeInOut' }}
+          className="absolute bottom-[-12rem] -left-40 w-[30rem] h-[30rem] rounded-full bg-forest/10 blur-3xl"
+        />
+        {/* Oversized ghost leaf with parallax */}
+        <motion.svg
           viewBox="0 0 24 24"
-          className="absolute top-1/2 right-[-6rem] w-[28rem] h-[28rem] text-forest/5 -translate-y-1/2 rotate-12"
+          style={{ x: leafX, y: leafY }}
+          animate={{ rotate: [12, 16, 12] }}
+          transition={{ duration: 12, repeat: Infinity, ease: 'easeInOut' }}
+          className="absolute top-1/2 right-[-6rem] w-[28rem] h-[28rem] text-forest/5 -translate-y-1/2"
           fill="currentColor"
         >
           <path d="M17 8C8 10 5.9 16.17 3.82 21.34l1.89.66.95-2.3c.48.17.98.3 1.34.3C19 20 22 3 22 3c-1 2-8 2.25-13 3.25S2 11.5 2 13.5s1.75 3.75 1.75 3.75C7 8 17 8 17 8z" />
-        </svg>
+        </motion.svg>
       </div>
 
-      <div className="container-site relative z-10 pt-32 pb-20 md:pt-40 md:pb-28">
+      <motion.div
+        style={{ opacity: contentOpacity, y: contentY }}
+        className="container-site relative z-10 pt-32 pb-20 md:pt-40 md:pb-28"
+      >
         <motion.p
           custom={0}
           variants={fade}
@@ -101,7 +140,7 @@ export default function Hero() {
             CIC, culturally sensitive
           </span>
         </motion.div>
-      </div>
+      </motion.div>
     </section>
   )
 }

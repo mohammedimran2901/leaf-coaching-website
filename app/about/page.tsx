@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { ArrowRight } from 'lucide-react'
+import CountUp from '../components/CountUp'
 
 const values = [
   {
@@ -54,13 +55,13 @@ export default function AboutPage() {
       <section className="section-padding">
         <div className="container-site grid md:grid-cols-3 gap-10 text-center md:text-left">
           {[
-            { stat: '100+', label: 'Active clients supported' },
-            { stat: '500+', label: 'Coaching sessions delivered' },
-            { stat: '10+', label: 'Community events hosted' },
+            { stat: 100, suffix: '+', label: 'Active clients supported' },
+            { stat: 500, suffix: '+', label: 'Coaching sessions delivered' },
+            { stat: 10, suffix: '+', label: 'Community events hosted' },
           ].map((s) => (
             <div key={s.label}>
               <div className="font-serif text-5xl md:text-6xl text-forest">
-                {s.stat}
+                <CountUp end={s.stat} suffix={s.suffix} />
               </div>
               <p className="mt-3 text-ink-muted text-sm uppercase tracking-widest2">
                 {s.label}

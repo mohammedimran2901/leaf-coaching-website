@@ -1,7 +1,7 @@
 'use client'
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion, AnimatePresence, useScroll, useSpring } from 'framer-motion'
 import { Menu, X, ArrowUpRight } from 'lucide-react'
 
 const navLinks = [
@@ -13,6 +13,8 @@ const navLinks = [
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const { scrollYProgress } = useScroll()
+  const progress = useSpring(scrollYProgress, { stiffness: 120, damping: 30, mass: 0.4 })
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 24)
@@ -29,6 +31,13 @@ export default function Header() {
           : 'bg-transparent py-6'
       }`}
     >
+      {/* Scroll progress */}
+      <motion.div
+        style={{ scaleX: progress }}
+        className="absolute bottom-0 left-0 right-0 h-[2px] origin-left bg-clay"
+        aria-hidden
+      />
+
       <div className="container-site flex justify-between items-center">
         <Link href="/" className="flex items-center gap-2.5 group">
           <span className="w-8 h-8 rounded-full bg-forest flex items-center justify-center transition-transform duration-500 ease-soft group-hover:rotate-12">
