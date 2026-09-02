@@ -3,59 +3,70 @@ import { motion } from 'framer-motion'
 
 const testimonials = [
   {
-    text: "Aamna taught me so much about a subject I thought I was already an expert on myself!",
-    author: "Life Coaching Client",
-    role: "Personal Growth",
+    quote:
+      'Aamna taught me so much about a subject I thought I was already an expert on — myself!',
+    author: 'Life coaching client',
   },
   {
-    text: "Finally found coaching that truly understands my cultural context. The sessions have been transformative.",
-    author: "Sarah M.",
-    role: "Workshop Participant",
+    quote:
+      'Finally found coaching that truly understands my cultural context. The sessions have been transformative.',
+    author: 'Workshop participant',
   },
   {
-    text: "The advocacy work Leaf does is incredibly important. Proud to be part of this community.",
-    author: "Ahmed K.",
-    role: "Halal Dinner Club Member",
+    quote:
+      'The advocacy work Leaf does is incredibly important. Proud to be part of this community.',
+    author: 'Halal Dinner Club member',
   },
 ]
 
 export default function Testimonials() {
   return (
-    <section className="section-padding bg-cream">
-      <div className="max-w-7xl mx-auto px-6">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
+    <section className="bg-forest text-sand section-padding relative overflow-hidden">
+      {/* soft glow */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute -top-40 right-0 w-[30rem] h-[30rem] rounded-full bg-clay/15 blur-3xl"
+      />
+      <div className="container-site relative">
+        <motion.p
+          initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-center mb-16"
+          viewport={{ once: true, margin: '-80px' }}
+          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+          className="eyebrow mb-4 !text-clay-light"
         >
-          <h2 className="text-4xl font-bold text-slate">Client Stories</h2>
-          <p className="text-slate-600 mt-4">
-            Real experiences from our community
-          </p>
-        </motion.div>
+          Client stories
+        </motion.p>
+        <motion.h2
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-80px' }}
+          transition={{ duration: 0.8, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+          className="text-4xl md:text-5xl font-serif mb-16 md:mb-20 max-w-2xl leading-tight"
+        >
+          Kind words from our <em className="italic text-clay-light">community</em>
+        </motion.h2>
 
-        <div className="grid md:grid-cols-3 gap-8">
-          {testimonials.map((testimonial, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, y: 20 }}
+        <div className="grid md:grid-cols-3 gap-10 md:gap-8">
+          {testimonials.map((t, i) => (
+            <motion.figure
+              key={i}
+              initial={{ opacity: 0, y: 32 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: index * 0.2 }}
-              className="bg-white rounded-xl p-8 shadow-sm"
+              viewport={{ once: true, margin: '-60px' }}
+              transition={{ duration: 0.8, delay: i * 0.15, ease: [0.22, 1, 0.36, 1] }}
+              className="border-t border-sand/20 pt-8"
             >
-              <p className="text-slate-600 italic mb-6">"{testimonial.text}"</p>
-              <div className="flex items-center">
-                <div className="bg-primary w-12 h-12 rounded-full flex items-center justify-center text-white font-bold">
-                  {testimonial.author[0]}
-                </div>
-                <div className="ml-4">
-                  <p className="font-semibold text-slate">{testimonial.author}</p>
-                  <p className="text-sm text-slate-500">{testimonial.role}</p>
-                </div>
-              </div>
-            </motion.div>
+              <span className="font-serif text-4xl text-clay-light leading-none block mb-4">
+                &ldquo;
+              </span>
+              <blockquote className="text-lg leading-relaxed text-sand/90">
+                {t.quote}
+              </blockquote>
+              <figcaption className="mt-6 text-sm uppercase tracking-widest2 text-sand/50">
+                {t.author}
+              </figcaption>
+            </motion.figure>
           ))}
         </div>
       </div>

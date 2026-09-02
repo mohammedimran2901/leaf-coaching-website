@@ -1,26 +1,33 @@
 'use client'
 import { motion } from 'framer-motion'
+import { ArrowRight } from 'lucide-react'
 
 export default function BookingCTA() {
   return (
-    <section className="section-padding bg-primary text-white">
-      <div className="max-w-7xl mx-auto px-6 text-center">
+    <section className="bg-clay-pale section-padding">
+      <div className="container-site">
         <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
+          initial={{ opacity: 0, y: 32 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-80px' }}
+          transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+          className="max-w-2xl"
         >
-          <h2 className="text-4xl font-bold mb-6">Ready to Transform Your Journey?</h2>
-          <p className="text-xl mb-8 opacity-90">
-            Book your free 30-minute discovery call and find out how we can help you
+          <p className="eyebrow mb-5">Begin today</p>
+          <h2 className="text-4xl md:text-6xl font-serif text-ink leading-[1.08]">
+            Your first conversation is{' '}
+            <em className="italic text-forest">free</em>.
+          </h2>
+          <p className="mt-6 text-lg text-ink-soft leading-relaxed max-w-xl">
+            Book a free 30-minute discovery call — a relaxed, no-pressure chat
+            about where you are and where you&rsquo;d like to grow.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <a href="/contact" className="bg-white text-primary px-8 py-4 rounded-lg font-semibold text-lg hover:bg-cream">
-              Book Free Call
+          <div className="flex flex-col sm:flex-row gap-4 mt-10">
+            <a href="/contact" className="btn-primary">
+              Book your free call <ArrowRight className="w-4 h-4" />
             </a>
-            <a href="/services" className="bg-transparent border-2 border-white px-8 py-4 rounded-lg font-semibold text-lg hover:bg-white/10">
-              View Membership Plans
+            <a href="/services" className="btn-ghost">
+              See how we help
             </a>
           </div>
         </motion.div>

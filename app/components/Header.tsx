@@ -1,97 +1,104 @@
 'use client'
 import { useState, useEffect } from 'react'
-import { motion } from 'framer-motion'
-import { Menu, X } from 'lucide-react'
+import Link from 'next/link'
+import { motion, AnimatePresence } from 'framer-motion'
+import { Menu, X, ArrowUpRight } from 'lucide-react'
+
+const navLinks = [
+  { name: 'About', href: '/about' },
+  { name: 'Services', href: '/services' },
+  { name: 'Contact', href: '/contact' },
+]
 
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 
   useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20)
-    }
-    window.addEventListener('scroll', handleScroll)
+    const handleScroll = () => setIsScrolled(window.scrollY > 24)
+    handleScroll()
+    window.addEventListener('scroll', handleScroll, { passive: true })
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
-  const navLinks = [
-    { name: 'About', href: '/about' },
-    { name: 'Services', href: '/services' },
-    { name: 'Contact', href: '/contact' },
-  ]
-
   return (
-    <motion.header
-      initial={{ y: -100 }}
-      animate={{ y: 0 }}
-      transition={{ duration: 0.5 }}
-      className={`fixed top-0 w-full z-50 transition-all duration-300 ${
-        isScrolled ? 'bg-white shadow-lg py-2' : 'bg-transparent py-4'
+    <header
+      className={`fixed top-0 w-full z-50 transition-all duration-500 ease-soft ${
+        isScrolled
+          ? 'bg-sand/85 backdrop-blur-md border-b hairline py-3'
+          : 'bg-transparent py-6'
       }`}
     >
-      <div className="max-w-7xl mx-auto px-6 flex justify-between items-center">
-        <a href="/" className="text-2xl font-serif font-bold text-primary">
-          Leaf Coaching
-        </a>
+      <div className="container-site flex justify-between items-center">
+        <Link href="/" className="flex items-center gap-2.5 group">
+          <span className="w-8 h-8 rounded-full bg-forest flex items-center justify-center transition-transform duration-500 ease-soft group-hover:rotate-12">
+            <svg viewBox="0 0 24 24" className="w-4 h-4 text-sand" fill="currentColor">
+              <path d="M17 8C8 10 5.9 16.17 3.82 21.34l1.89.66.95-2.3c.48.17.98.3 1.34.3C19 20 22 3 22 3c-1 2-8 2.25-13 3.25S2 11.5 2 13.5s1.75 3.75 1.75 3.75C7 8 17 8 17 8z" />
+            </svg>
+          </span>
+          <span className="font-serif text-lg md:text-xl text-ink tracking-tight">
+            Leaf Coaching
+          </span>
+        </Link>
 
-        {/* Desktop Navigation */}
-        <nav className="hidden md:flex space-x-8">
+        {/* Desktop nav */}
+        <nav className="hidden md:flex items-center gap-9">
           {navLinks.map((link) => (
-            <a
+            <Link
               key={link.name}
               href={link.href}
-              className="text-slate hover:text-primary transition-colors font-medium"
+              className="link-underline text-sm font-medium text-ink-soft hover:text-ink transition-colors"
             >
               {link.name}
-            </a>
+            </Link>
           ))}
+          <Link href="/contact" className="btn-primary !px-6 !py-2.5">
+            Book a call <ArrowUpRight className="w-4 h-4" />
+          </Link>
         </nav>
 
-        <a
-          href="/contact"
-          className="hidden md:inline-block btn-primary"
-        >
-          Book Free Call
-        </a>
-
-        {/* Mobile Menu Button */}
+        {/* Mobile toggle */}
         <button
-          className="md:hidden text-primary"
+          aria-label="Toggle menu"
+          className="md:hidden text-ink p-1"
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
         >
-          {isMobileMenuOpen ? <X /> : <Menu />}
+          {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
         </button>
       </div>
 
-      {/* Mobile Menu */}
-      {isMobileMenuOpen && (
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="md:hidden bg-white border-t absolute w-full"
-        >
-          <div className="px-6 py-4 space-y-4">
-            {navLinks.map((link) => (
-              <a
-                key={link.name}
-                href={link.href}
-                className="block text-slate hover:text-primary"
+      {/* Mobile menu */}
+      <AnimatePresence>
+        {isMobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+            className="md:hidden bg-sand/95 backdrop-blur-md border-b hairline overflow-hidden absolute w-full"
+          >
+            <div className="container-site py-6 flex flex-col gap-5">
+              {navLinks.map((link) => (
+                <Link
+                  key={link.name}
+                  href={link.href}
+                  className="font-serif text-2xl text-ink"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  {link.name}
+                </Link>
+              ))}
+              <Link
+                href="/contact"
+                className="btn-primary w-full"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
-                {link.name}
-              </a>
-            ))}
-            <a
-              href="/contact"
-              className="btn-primary block text-center"
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              Book Free Call
-            </a>
-          </div>
-        </motion.div>
-      )}
-    </motion.header>
+                Book a free call
+              </Link>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </header>
   )
 }
