@@ -13,12 +13,24 @@ export default function CountUp({
 }) {
   const ref = useRef<HTMLSpanElement>(null)
   const isInView = useInView(ref, { once: true, margin: '-60px' })
-  const [value, setValue] = useState(0)
+  // Start at the final value so the server-rendered and no-JS experience is
+  // accurate, then run the count-up once the number scrolls into view.
+  const [value, setValue] = useState(end)
 
   useEffect(() => {
     if (!isInView) return
+
+    if (
+      typeof window !== 'undefined' &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    ) {
+      setValue(end)
+      return
+    }
+
     let raf: number
     const start = performance.now()
+    setValue(0)
     const tick = (now: number) => {
       const progress = Math.min((now - start) / duration, 1)
       // easeOutExpo
@@ -31,9 +43,11 @@ export default function CountUp({
   }, [isInView, end, duration])
 
   return (
-    <span ref={ref}>
-      {value}
-      {suffix}
+    <span ref={ref} aria-label={`${end}${suffix}`}>
+      <span aria-hidden="true">
+        {value}
+        {suffix}
+      </span>
     </span>
   )
 }

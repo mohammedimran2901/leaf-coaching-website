@@ -55,3 +55,41 @@
     @apply relative after:absolute after:left-0 after:-bottom-0.5 after:h-px after:w-0 after:bg-clay after:transition-all after:duration-500 after:ease-soft hover:after:w-full;
   }
 }
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .marquee {
+    animation: marquee 42s linear infinite;
+  }
+
+  .marquee:hover {
+    animation-play-state: paused;
+  }
+
+  .grain {
+    background-image: radial-gradient(rgba(43, 38, 34, 0.16) 0.5px, transparent 0.5px);
+    background-size: 4px 4px;
+  }
+}
+
+@keyframes marquee {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .marquee {
+    animation: none;
+  }
+}

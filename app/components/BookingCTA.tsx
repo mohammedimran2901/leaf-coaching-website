@@ -26,8 +26,8 @@ export default function BookingCTA() {
             <a href="/contact" className="btn-primary">
               Book your free call <ArrowRight className="w-4 h-4" />
             </a>
-            <a href="/services" className="btn-ghost">
-              See how we help
+            <a href="/pay" className="btn-ghost">
+              Pay &amp; book a session
             </a>
           </div>
         </motion.div>

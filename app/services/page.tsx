@@ -1,37 +1,45 @@
 import Link from 'next/link'
-import { ArrowRight, Check } from 'lucide-react'
+import { ArrowRight, BookOpen, Check } from 'lucide-react'
 import FAQ from '../components/FAQ'
+import { formatGBP, getProduct } from '@/lib/products'
 
 const services = [
   {
+    productId: 'single-session',
     title: '1-2-1 Life Coaching',
     description:
       'Personalised coaching sessions tailored to your unique goals, values and cultural background.',
-    price: '£69.95',
-    per: 'per month',
+    per: 'per 60-minute session',
     features: [
-      'Weekly 50-minute sessions',
+      'A confidential, unhurried hour',
       'Personalised action plans',
       'Between-session support',
     ],
   },
   {
+    productId: 'workshop-place',
     title: 'Group Workshops',
     description:
       'Learn and grow alongside others in a supportive community environment.',
-    price: '£49.95',
-    per: 'per session',
+    per: 'per workshop place',
     features: ['2-hour interactive sessions', 'Practical exercises', 'Community access'],
   },
   {
+    productId: 'dinner-club-month',
     title: 'Halal Dinner Club',
     description:
       'Community, advocacy and connection — good food, real conversation, shared growth.',
-    price: '£129.95',
     per: 'per month',
     features: ['All coaching benefits', 'Event access', 'Advocacy training'],
   },
 ]
+
+const book = getProduct('be-melting-snow')
+
+function priceFor(productId: string) {
+  const product = getProduct(productId)
+  return product ? formatGBP(product.price) : ''
+}
 
 export default function ServicesPage() {
   return (
@@ -79,7 +87,7 @@ export default function ServicesPage() {
                     i === 0 ? 'text-clay-light' : 'text-forest'
                   }`}
                 >
-                  {service.price}
+                  {priceFor(service.productId)}
                 </span>{' '}
                 <span
                   className={`text-sm ${i === 0 ? 'text-sand/60' : 'text-ink-muted'}`}
@@ -99,15 +107,52 @@ export default function ServicesPage() {
                   </li>
                 ))}
               </ul>
-              <Link
-                href="/contact"
-                className={`mt-auto ${i === 0 ? 'btn-light' : 'btn-primary'} w-full`}
-              >
-                Book now <ArrowRight className="w-4 h-4" />
-              </Link>
+              <div className="mt-auto space-y-3">
+                <Link
+                  href={`/pay?product=${service.productId}`}
+                  className={`${i === 0 ? 'btn-light' : 'btn-primary'} w-full`}
+                >
+                  Pay &amp; book <ArrowRight className="w-4 h-4" />
+                </Link>
+                <Link
+                  href="/contact"
+                  className={`block text-center text-sm underline-offset-4 hover:underline ${
+                    i === 0 ? 'text-sand/60' : 'text-ink-muted'
+                  }`}
+                >
+                  Or ask a question first
+                </Link>
+              </div>
             </div>
           ))}
         </div>
+
+        {book && (
+          <div className="mt-6 flex flex-col items-start justify-between gap-6 rounded-3xl border border-clay/25 bg-clay-pale/60 p-8 md:flex-row md:items-center md:p-10">
+            <div className="flex items-start gap-4">
+              <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-forest text-sand">
+                <BookOpen className="h-5 w-5" />
+              </span>
+              <div>
+                <p className="text-[11px] uppercase tracking-widest2 text-clay">
+                  The book
+                </p>
+                <h2 className="mt-1 font-serif text-2xl text-ink md:text-3xl">
+                  {book.name}
+                </h2>
+                <p className="mt-2 max-w-xl text-sm leading-relaxed text-ink-soft">
+                  {book.summary}
+                </p>
+              </div>
+            </div>
+            <div className="flex shrink-0 items-center gap-5">
+              <p className="font-serif text-3xl text-forest">{formatGBP(book.price)}</p>
+              <Link href={`/pay?product=${book.id}`} className="btn-primary">
+                Buy the book <ArrowRight className="w-4 h-4" />
+              </Link>
+            </div>
+          </div>
+        )}
       </section>
 
       <FAQ />
