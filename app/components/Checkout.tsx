@@ -282,7 +282,7 @@ export default function Checkout({
             <p className="mt-6 text-xs uppercase tracking-widest2 text-sand/60">
               Payment received
             </p>
-            <h2 className="mt-2 font-serif text-4xl">Thank you, {form.name.split(' ')[0]}.</h2>
+            <h2 className="mt-2 font-serif text-4xl">Thank you, {form.name.split(' ')[0] || 'friend'}.</h2>
             <p className="mt-3 max-w-md text-sand/75">
               {receipt.downloads && receipt.downloads.length > 0
                 ? 'Your payment has gone through and your download is ready below. A PayPal receipt is on its way to your inbox.'
@@ -406,21 +406,23 @@ export default function Checkout({
       <div className="mx-auto max-w-2xl rounded-[2rem] border hairline bg-white/80 p-8 text-center shadow-[0_30px_80px_-50px_rgba(20,50,35,0.5)] md:p-12">
         <p className="eyebrow mb-4">Payment update</p>
         <h2 className="font-serif text-4xl text-ink">
-          We could not confirm your payment
+          Payment not confirmed
         </h2>
         <p role="alert" className="mx-auto mt-4 max-w-lg text-ink-soft">
           {returnError}
         </p>
-        <p className="mx-auto mt-4 max-w-lg text-sm text-ink-muted">
-          If you were charged, email{' '}
-          <a
-            className="text-forest underline underline-offset-4"
-            href="mailto:hello@leafcoaching.com?subject=Payment%20confirmation"
-          >
-            hello@leafcoaching.com
-          </a>{' '}
-          with your PayPal receipt and we will sort it straight away.
-        </p>
+        {!returnError.toLowerCase().includes('if you were charged') && (
+          <p className="mx-auto mt-4 max-w-lg text-sm text-ink-muted">
+            If you were charged, email{' '}
+            <a
+              className="text-forest underline underline-offset-4"
+              href="mailto:hello@leafcoaching.com?subject=Payment%20confirmation"
+            >
+              hello@leafcoaching.com
+            </a>{' '}
+            with your PayPal receipt and we will sort it straight away.
+          </p>
+        )}
         <div className="mt-8 flex flex-wrap justify-center gap-3">
           <Link
             href={`/pay?product=${encodeURIComponent(productId)}`}
