@@ -48,7 +48,9 @@ Deep links into checkout use `?product=`:
 ## Payments
 
 Prices and product names live in [`lib/products.ts`](lib/products.ts) and are
-the single source of truth. The browser only sends product IDs and quantities;
+the single source of truth. `price` is always the amount actually charged;
+`compareAtPrice` and `saleLabel` are display-only fields for showing a sale.
+The browser only sends product IDs and quantities;
 `app/api/paypal/create-order/route.ts` and
 `app/api/paypal/capture-order/route.ts` recalculate every line and the total
 server-side before talking to PayPal. If a client tampers with a price, the
@@ -94,8 +96,8 @@ Copy `.env.example` to `.env.local`:
 
 | Variable | Required | Notes |
 | --- | --- | --- |
-| `NEXT_PUBLIC_PAYPAL_CLIENT_ID` | Yes (for checkout) | Public PayPal REST app client ID, used by the JS SDK |
-| `PAYPAL_CLIENT_ID` | Yes (for checkout) | Server client ID (may be the same value) |
+| `NEXT_PUBLIC_PAYPAL_CLIENT_ID` | Yes (for checkout) | Public PayPal REST app client ID used by the JS SDK. Must match `PAYPAL_CLIENT_ID` |
+| `PAYPAL_CLIENT_ID` | Yes (for checkout) | Server client ID (the same value as above) |
 | `PAYPAL_CLIENT_SECRET` | Yes (for checkout) | Server secret — never expose publicly |
 | `PAYPAL_ENV` | No | `sandbox` (default) or `live` |
 | `PAYMENT_NOTIFICATION_WEBHOOK` | No | Optional JSON POST of captured orders for bookkeeping (includes issued download links) |

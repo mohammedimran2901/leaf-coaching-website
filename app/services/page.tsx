@@ -170,6 +170,11 @@ export default function ServicesPage() {
                 <span className="flex items-center gap-2">
                   <Download className="h-4 w-4" /> Workbook ·{' '}
                   {formatGBP(workbook.price)}
+                  {workbook.compareAtPrice && (
+                    <span className="text-xs font-normal text-sand/60 line-through">
+                      was {formatGBP(workbook.compareAtPrice)}
+                    </span>
+                  )}
                 </span>
                 <ArrowRight className="h-4 w-4" />
               </Link>

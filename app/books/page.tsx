@@ -16,7 +16,7 @@ import { formatGBP, getProduct } from '@/lib/products'
 export const metadata: Metadata = {
   title: 'Books & workbooks | Leaf Coaching',
   description:
-    'Be Melting Snow, the book by Aamna Khokhar, and Beyond the Role — a 29-page relational patterns workbook available as an instant PDF download.',
+    'Be Melting Snow, the book by Aamna Khokhar, and Beyond the Role — a 29-page relational patterns workbook available as an instant PDF download. Launch offer: £3.99, usually £12.99.',
 }
 
 const inside = [
@@ -169,6 +169,11 @@ export default function BooksPage() {
                       <p className="text-[11px] uppercase tracking-widest text-clay">
                         New workbook
                       </p>
+                      {workbook.saleLabel && (
+                        <span className="rounded-full bg-clay px-2.5 py-1 text-[9px] uppercase tracking-widest text-sand">
+                          {workbook.saleLabel}
+                        </span>
+                      )}
                       <span className="rounded-full bg-forest px-2.5 py-1 text-[9px] uppercase tracking-widest text-sand">
                         Instant download
                       </span>
@@ -200,8 +205,15 @@ export default function BooksPage() {
                     <p className="text-[11px] uppercase tracking-widest text-ink-muted">
                       {workbook.meta}
                     </p>
-                    <p className="mt-1 font-serif text-4xl text-forest">
-                      {formatGBP(workbook.price)}
+                    <p className="mt-1 flex flex-wrap items-baseline gap-x-2 gap-y-1">
+                      <span className="font-serif text-4xl text-forest">
+                        {formatGBP(workbook.price)}
+                      </span>
+                      {workbook.compareAtPrice && (
+                        <span className="font-sans text-base text-ink-muted line-through">
+                          {formatGBP(workbook.compareAtPrice)}
+                        </span>
+                      )}
                     </p>
                   </div>
                   <Link
@@ -288,9 +300,14 @@ export default function BooksPage() {
                 </ul>
                 {workbook && (
                   <div className="mt-7 flex flex-wrap items-center justify-between gap-4 border-t hairline pt-6">
-                    <p className="font-serif text-2xl text-forest">
-                      {formatGBP(workbook.price)}
-                      <span className="ml-2 font-sans text-xs uppercase tracking-widest text-ink-muted">
+                    <p className="flex flex-wrap items-baseline gap-x-2 gap-y-1 font-serif text-2xl text-forest">
+                      <span>{formatGBP(workbook.price)}</span>
+                      {workbook.compareAtPrice && (
+                        <span className="font-sans text-sm font-normal text-ink-muted line-through">
+                          {formatGBP(workbook.compareAtPrice)}
+                        </span>
+                      )}
+                      <span className="font-sans text-xs uppercase tracking-widest text-ink-muted">
                         PDF · instant download
                       </span>
                     </p>

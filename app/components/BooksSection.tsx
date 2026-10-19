@@ -74,6 +74,11 @@ export default function BooksSection() {
                   <span className="text-[10px] uppercase tracking-widest text-clay-light">
                     New · digital workbook
                   </span>
+                  {workbook.saleLabel && (
+                    <span className="rounded-full bg-clay px-2.5 py-1 text-[9px] uppercase tracking-widest text-sand">
+                      {workbook.saleLabel}
+                    </span>
+                  )}
                   <span className="inline-flex items-center gap-1 rounded-full bg-sand/10 px-2.5 py-1 text-[9px] uppercase tracking-widest text-sand/80">
                     <Download className="h-3 w-3" /> Instant PDF
                   </span>
@@ -89,6 +94,11 @@ export default function BooksSection() {
               <span className="flex shrink-0 items-center gap-4 sm:flex-col sm:items-end sm:gap-2">
                 <span className="font-serif text-2xl text-clay-light">
                   {formatGBP(workbook.price)}
+                  {workbook.compareAtPrice && (
+                    <span className="ml-2 font-sans text-xs font-normal text-sand/50 line-through">
+                      {formatGBP(workbook.compareAtPrice)}
+                    </span>
+                  )}
                 </span>
                 <span className="flex h-9 w-9 items-center justify-center rounded-full border border-sand/25 text-sand transition-all duration-500 group-hover:border-clay group-hover:bg-clay group-hover:text-sand">
                   <ArrowRight className="h-4 w-4" />

@@ -28,6 +28,10 @@ export interface Product {
   name: string
   /** Price in GBP, as a number of pounds and pence. */
   price: number
+  /** Original price in GBP when the product is on sale. */
+  compareAtPrice?: number
+  /** Short label shown next to a sale price. */
+  saleLabel?: string
   category: ProductCategory
   summary: string
   description: string
@@ -116,10 +120,12 @@ export const PRODUCTS: Product[] = [
   {
     id: 'beyond-the-role',
     name: 'Beyond the Role — the workbook',
-    price: 12.99,
+    price: 3.99,
+    compareAtPrice: 12.99,
+    saleLabel: 'Launch offer',
     category: 'books',
     summary:
-      'A 29-page relational patterns workbook for noticing what you reach for, understanding why, and recovering choice.',
+      'A 29-page relational patterns workbook for noticing what you reach for, understanding why, and recovering choice — now £3.99 (usually £12.99).',
     description:
       'A reflective, evidence-informed workbook by Aamna Khokhar. Five parts, practical prompts and space to write. Your PDF download link appears immediately after payment and stays valid for seven days.',
     meta: 'Digital PDF · 29 pages · instant download',

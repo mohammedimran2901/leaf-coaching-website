@@ -303,6 +303,11 @@ export default function Checkout({
                                       {option.badge}
                                     </span>
                                   )}
+                                  {option.saleLabel && (
+                                    <span className="rounded-full bg-clay px-2.5 py-1 text-[10px] font-medium uppercase tracking-widest text-sand">
+                                      {option.saleLabel}
+                                    </span>
+                                  )}
                                 </span>
                                 <span className="mt-1 block text-sm leading-relaxed text-ink-soft">
                                   {option.summary}
@@ -311,8 +316,15 @@ export default function Checkout({
                                   {option.meta}
                                 </span>
                               </span>
-                              <span className="shrink-0 font-serif text-xl text-forest">
-                                {formatGBP(option.price)}
+                              <span className="shrink-0 text-right">
+                                <span className="block font-serif text-xl text-forest">
+                                  {formatGBP(option.price)}
+                                </span>
+                                {option.compareAtPrice && (
+                                  <span className="mt-0.5 block text-xs text-ink-muted line-through">
+                                    {formatGBP(option.compareAtPrice)}
+                                  </span>
+                                )}
                               </span>
                             </label>
                           )
@@ -475,6 +487,11 @@ export default function Checkout({
                 <dt className="text-xs uppercase tracking-widest text-ink-muted">Total</dt>
                 <dd className="mt-1 font-serif text-xl text-forest">
                   {formatGBP(product.price)}
+                  {product.compareAtPrice && (
+                    <span className="ml-2 font-sans text-xs font-normal text-ink-muted line-through">
+                      {formatGBP(product.compareAtPrice)}
+                    </span>
+                  )}
                 </dd>
               </div>
             </dl>
@@ -505,7 +522,16 @@ export default function Checkout({
               <p className="mt-2 text-sm text-sand/65">{product.meta}</p>
               <div className="mt-6 flex items-baseline justify-between border-t border-sand/15 pt-5">
                 <span className="text-sm text-sand/65">Total today</span>
-                <span className="font-serif text-3xl">{formatGBP(product.price)}</span>
+                <span className="text-right">
+                  <span className="block font-serif text-3xl">
+                    {formatGBP(product.price)}
+                  </span>
+                  {product.compareAtPrice && (
+                    <span className="mt-1 block text-sm text-sand/45 line-through">
+                      was {formatGBP(product.compareAtPrice)}
+                    </span>
+                  )}
+                </span>
               </div>
             </div>
             <div className="bg-forest-deep/60 p-7 text-sm text-sand/75 md:p-8">
