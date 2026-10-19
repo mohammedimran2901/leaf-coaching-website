@@ -85,6 +85,19 @@ function loadPayPalSdk(clientId: string): Promise<void> {
   return sdkPromise
 }
 
+async function fetchClientIdFromServer(): Promise<string | null> {
+  try {
+    const response = await fetch('/api/paypal/config', { cache: 'no-store' })
+    if (!response.ok) return null
+
+    const data = (await response.json()) as { clientId?: string | null }
+    return data.clientId || null
+  } catch (error) {
+    console.error('[paypal] could not load configuration', error)
+    return null
+  }
+}
+
 export default function PayPalButtons({
   items,
   customer,
@@ -94,17 +107,37 @@ export default function PayPalButtons({
   const containerRef = useRef<HTMLDivElement>(null)
   const [status, setStatus] = useState<'loading' | 'ready' | 'error'>('loading')
   const [message, setMessage] = useState('')
-  const clientId = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID
+  const buildTimeClientId = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID
+  const [clientId, setClientId] = useState('')
+  const [configStatus, setConfigStatus] = useState<
+    'loading' | 'ready' | 'error'
+  >('loading')
   const successRef = useRef(onSuccess)
   const errorRef = useRef(onError)
   successRef.current = onSuccess
   errorRef.current = onError
 
   useEffect(() => {
-    if (!clientId) {
-      setStatus('error')
-      return
+    let cancelled = false
+
+    fetchClientIdFromServer().then((serverClientId) => {
+      if (cancelled) return
+
+      // The server value is authoritative because it is the ID paired with
+      // PAYPAL_CLIENT_SECRET. Only fall back to the build-time value when the
+      // endpoint cannot provide one.
+      const resolved = serverClientId || buildTimeClientId || ''
+      setClientId(resolved)
+      setConfigStatus(resolved ? 'ready' : 'error')
+    })
+
+    return () => {
+      cancelled = true
     }
+  }, [buildTimeClientId])
+
+  useEffect(() => {
+    if (configStatus !== 'ready' || !clientId) return
 
     let cancelled = false
     let buttons: PayPalButtonInstance | null = null
@@ -226,14 +259,25 @@ export default function PayPalButtons({
         // PayPal may already have torn down the iframe.
       }
     }
-  }, [clientId, items, customer])
+  }, [clientId, configStatus, items, customer])
 
   if (!clientId) {
+    if (configStatus === 'loading') {
+      return (
+        <div className="rounded-2xl border border-clay/30 bg-clay-pale/70 p-5 text-sm text-ink-soft">
+          <p className="font-medium text-ink mb-1">Preparing secure payment…</p>
+          <p>This only takes a moment.</p>
+        </div>
+      )
+    }
+
     return (
       <div className="rounded-2xl border border-clay/30 bg-clay-pale/70 p-5 text-sm text-ink-soft">
-        <p className="font-medium text-ink mb-1">Card payments are nearly ready.</p>
+        <p className="font-medium text-ink mb-1">
+          Secure payment is temporarily unavailable.
+        </p>
         <p>
-          PayPal has not been switched on for this site yet. Email{' '}
+          Please refresh the page and try again. If it keeps happening, email{' '}
           <a
             className="text-forest underline underline-offset-4"
             href="mailto:hello@leafcoaching.com?subject=Payment%20for%20Leaf%20Coaching"

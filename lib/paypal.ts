@@ -49,8 +49,12 @@ export function payPalEnvironment(): 'sandbox' | 'live' {
 }
 
 export function payPalClientId(): string | undefined {
+  // Prefer the server credential: it is the ID paired with
+  // PAYPAL_CLIENT_SECRET. The public build-time value is only a fallback, so a
+  // missing or stale NEXT_PUBLIC_* value cannot pair the browser with a
+  // different PayPal app than the one used to create and capture orders.
   return (
-    process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID || process.env.PAYPAL_CLIENT_ID
+    process.env.PAYPAL_CLIENT_ID || process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID
   )
 }
 

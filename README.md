@@ -96,17 +96,20 @@ Copy `.env.example` to `.env.local`:
 
 | Variable | Required | Notes |
 | --- | --- | --- |
-| `NEXT_PUBLIC_PAYPAL_CLIENT_ID` | Yes (for checkout) | Public PayPal REST app client ID used by the JS SDK. Must match `PAYPAL_CLIENT_ID` |
-| `PAYPAL_CLIENT_ID` | Yes (for checkout) | Server client ID (the same value as above) |
+| `NEXT_PUBLIC_PAYPAL_CLIENT_ID` | No | Optional build-time copy of the public client ID. The checkout also fetches it at runtime from `/api/paypal/config`, so `PAYPAL_CLIENT_ID` is the source of truth |
+| `PAYPAL_CLIENT_ID` | Yes (for checkout) | Public client ID used by the server and served to the browser by `/api/paypal/config` |
 | `PAYPAL_CLIENT_SECRET` | Yes (for checkout) | Server secret — never expose publicly |
 | `PAYPAL_ENV` | No | `sandbox` (default) or `live` |
 | `PAYMENT_NOTIFICATION_WEBHOOK` | No | Optional JSON POST of captured orders for bookkeeping (includes issued download links) |
 | `DOWNLOAD_SIGNING_SECRET` | No | Signs download links. Falls back to `PAYPAL_CLIENT_SECRET`; set explicitly in production |
 | `SITE_URL` | No | Canonical public origin for download links. Defaults to the request host |
 
-Without `PAYPAL_CLIENT_ID` + `PAYPAL_CLIENT_SECRET`, the API routes return
-`503` and checkout falls back to an `hello@leafcoaching.com` email prompt, so
-the site remains usable before payments go live.
+The browser resolves the client ID from `/api/paypal/config`, which reads
+`PAYPAL_CLIENT_ID` at runtime. A missing or stale `NEXT_PUBLIC_*` build variable
+therefore cannot silently disable the PayPal buttons. Without
+`PAYPAL_CLIENT_ID` + `PAYPAL_CLIENT_SECRET`, the API routes return `503` and
+checkout shows an `hello@leafcoaching.com` contact prompt, so the site remains
+usable before payments go live.
 
 ### Going live
 
