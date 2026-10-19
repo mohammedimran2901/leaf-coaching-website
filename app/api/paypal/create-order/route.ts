@@ -11,6 +11,7 @@ import {
   isPayPalConfigured,
   payPalEnvironment,
 } from '@/lib/paypal'
+import { requestOrigin } from '@/lib/downloads'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -36,6 +37,15 @@ export async function POST(request: Request) {
   try {
     const checkout = validateCheckout(body)
     const reference = orderReference()
+    const wantsRedirect =
+      Boolean(body) &&
+      typeof body === 'object' &&
+      (body as { redirect?: unknown }).redirect === true
+    const origin = requestOrigin(request)
+    const returnUrl = wantsRedirect ? `${origin}/pay/return` : undefined
+    const cancelUrl = wantsRedirect
+      ? `${origin}/pay?product=${encodeURIComponent(checkout.lines[0].product.id)}`
+      : undefined
 
     const order = await createPayPalOrder({
       items: checkout.items,
@@ -46,7 +56,18 @@ export async function POST(request: Request) {
       customId: `${reference}|${encodeBasket(checkout.lines)}`,
       customer: checkout.customer,
       requiresShipping: checkout.requiresShipping,
+      returnUrl,
+      cancelUrl,
     })
+
+    const approveUrl =
+      order.links?.find(
+        (link) => link.rel === 'approve' || link.rel === 'payer-action'
+      )?.href ?? null
+
+    if (wantsRedirect && !approveUrl) {
+      throw new Error('PayPal did not return an approval link')
+    }
 
     console.info('[paypal] order created', {
       orderId: order.id,
@@ -54,12 +75,14 @@ export async function POST(request: Request) {
       environment: payPalEnvironment(),
       items: describeLines(checkout.lines),
       total: checkout.total.toFixed(2),
+      redirect: wantsRedirect,
     })
 
     return NextResponse.json({
       id: order.id,
       reference,
       total: checkout.total,
+      approveUrl,
     })
   } catch (error) {
     if (error instanceof CheckoutError) {

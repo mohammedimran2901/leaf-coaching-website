@@ -67,6 +67,11 @@ Flow:
 4. The page shows a receipt with a `mailto:` follow-up link — and, for digital
    products, a signed download link.
 
+If the PayPal SDK is blocked by an ad blocker or privacy setting, the checkout
+times out after 12 seconds and offers **Continue to PayPal**. That creates the
+same order through the REST API and redirects to PayPal's hosted checkout; the
+`/pay/return` page captures the order and shows the same receipt and download.
+
 ### Digital downloads
 
 The workbook PDF lives at `private/downloads/beyond-the-role.pdf` — deliberately

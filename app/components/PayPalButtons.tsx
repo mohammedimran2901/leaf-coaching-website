@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react'
 
 interface PayPalButtonsProps {
+  productId: string
   items: Array<{ id: string; quantity: number }>
   customer: {
     name: string
@@ -53,22 +54,60 @@ declare global {
 
 let sdkPromise: Promise<void> | null = null
 
+const SDK_TIMEOUT_MS = 12_000
+const RENDER_TIMEOUT_MS = 12_000
+
+function withTimeout<T>(
+  promise: Promise<T>,
+  milliseconds: number,
+  message: string
+): Promise<T> {
+  return new Promise<T>((resolve, reject) => {
+    const timer = setTimeout(() => reject(new Error(message)), milliseconds)
+    promise.then(
+      (value) => {
+        clearTimeout(timer)
+        resolve(value)
+      },
+      (error) => {
+        clearTimeout(timer)
+        reject(error)
+      }
+    )
+  })
+}
+
 function loadPayPalSdk(clientId: string): Promise<void> {
   if (typeof window === 'undefined') return Promise.resolve()
-  if (window.paypal) return Promise.resolve()
+  if (window.paypal?.Buttons) return Promise.resolve()
   if (sdkPromise) return sdkPromise
 
-  sdkPromise = new Promise((resolve, reject) => {
-    const existing = document.querySelector<HTMLScriptElement>(
-      'script[data-paypal-sdk]'
-    )
-    if (existing) {
-      existing.addEventListener('load', () => resolve())
-      existing.addEventListener('error', () =>
-        reject(new Error('The PayPal script could not load.'))
-      )
-      return
+  const promise = new Promise<void>((resolve, reject) => {
+    let settled = false
+    let timer: number | undefined
+
+    const finish = (error?: Error) => {
+      if (settled) return
+      settled = true
+      if (timer) window.clearTimeout(timer)
+      if (error) reject(error)
+      else resolve()
     }
+
+    timer = window.setTimeout(
+      () =>
+        finish(
+          new Error(
+            'PayPal took too long to load. An ad blocker or privacy setting may be stopping it.'
+          )
+        ),
+      SDK_TIMEOUT_MS
+    )
+
+    // A previous attempt may have left a broken or blocked script behind.
+    document
+      .querySelectorAll<HTMLScriptElement>('script[data-paypal-sdk]')
+      .forEach((script) => script.remove())
 
     const script = document.createElement('script')
     script.src = `https://www.paypal.com/sdk/js?client-id=${encodeURIComponent(
@@ -76,10 +115,31 @@ function loadPayPalSdk(clientId: string): Promise<void> {
     )}&currency=GBP&intent=capture&components=buttons`
     script.async = true
     script.dataset.paypalSdk = 'true'
-    script.onload = () => resolve()
-    script.onerror = () =>
-      reject(new Error('The PayPal script could not load.'))
+    script.addEventListener('load', () => {
+      if (window.paypal?.Buttons) {
+        finish()
+      } else {
+        finish(
+          new Error(
+            'PayPal loaded but did not start. An ad blocker or privacy setting may be stopping it.'
+          )
+        )
+      }
+    })
+    script.addEventListener('error', () =>
+      finish(
+        new Error(
+          'The PayPal script could not load. An ad blocker or privacy setting may be stopping it.'
+        )
+      )
+    )
     document.head.appendChild(script)
+  })
+
+  sdkPromise = promise.catch((error) => {
+    // Let a retry create a fresh script rather than reuse a failed attempt.
+    sdkPromise = null
+    throw error
   })
 
   return sdkPromise
@@ -99,6 +159,7 @@ async function fetchClientIdFromServer(): Promise<string | null> {
 }
 
 export default function PayPalButtons({
+  productId,
   items,
   customer,
   onSuccess,
@@ -112,6 +173,11 @@ export default function PayPalButtons({
   const [configStatus, setConfigStatus] = useState<
     'loading' | 'ready' | 'error'
   >('loading')
+  const [attempt, setAttempt] = useState(0)
+  const [redirectStatus, setRedirectStatus] = useState<
+    'idle' | 'starting' | 'error'
+  >('idle')
+  const [redirectError, setRedirectError] = useState('')
   const successRef = useRef(onSuccess)
   const errorRef = useRef(onError)
   successRef.current = onSuccess
@@ -143,8 +209,18 @@ export default function PayPalButtons({
     let buttons: PayPalButtonInstance | null = null
 
     loadPayPalSdk(clientId)
-      .then(() => {
-        if (cancelled || !containerRef.current || !window.paypal) return
+      .then(async () => {
+        if (cancelled) return
+
+        if (!containerRef.current) {
+          throw new Error('The payment area is not ready. Please refresh the page.')
+        }
+
+        if (!window.paypal?.Buttons) {
+          throw new Error(
+            'PayPal loaded but did not start. An ad blocker or privacy setting may be stopping it.'
+          )
+        }
 
         containerRef.current.innerHTML = ''
         buttons = window.paypal.Buttons({
@@ -238,17 +314,19 @@ export default function PayPalButtons({
           },
         })
 
-        return buttons.render(containerRef.current).then(() => {
-          if (!cancelled) setStatus('ready')
-        })
+        await withTimeout(
+          buttons.render(containerRef.current),
+          RENDER_TIMEOUT_MS,
+          'PayPal did not finish setting up. Please refresh the page.'
+        )
+
+        if (!cancelled) setStatus('ready')
       })
       .catch((error: unknown) => {
         if (cancelled) return
         console.error('[paypal] sdk load failed', error)
         setStatus('error')
-        setMessage(
-          'PayPal could not load. Please check your connection and refresh, or email hello@leafcoaching.com.'
-        )
+        setMessage('')
       })
 
     return () => {
@@ -259,7 +337,65 @@ export default function PayPalButtons({
         // PayPal may already have torn down the iframe.
       }
     }
-  }, [clientId, configStatus, items, customer])
+  }, [clientId, configStatus, items, customer, attempt])
+
+  const retry = () => {
+    setStatus('loading')
+    setMessage('')
+    setRedirectStatus('idle')
+    setRedirectError('')
+    setAttempt((current) => current + 1)
+  }
+
+  const startRedirectCheckout = async () => {
+    setRedirectStatus('starting')
+    setRedirectError('')
+
+    try {
+      const response = await fetch('/api/paypal/create-order', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ items, customer, redirect: true }),
+      })
+      const data = (await response.json()) as {
+        id?: string
+        approveUrl?: string
+        error?: string
+      }
+
+      if (!response.ok || !data.id || !data.approveUrl) {
+        throw new Error(
+          data.error || 'We could not open PayPal. Please try again.'
+        )
+      }
+
+      const approveUrl = new URL(data.approveUrl)
+      if (
+        approveUrl.protocol !== 'https:' ||
+        !/(^|\.)paypal\.com$/i.test(approveUrl.hostname)
+      ) {
+        throw new Error('PayPal returned an unexpected payment link.')
+      }
+
+      try {
+        sessionStorage.setItem(
+          `leaf-checkout:${data.id}`,
+          JSON.stringify({ items, customer, productId })
+        )
+      } catch {
+        // The payment can still complete; support can match it using the order ID.
+      }
+
+      window.location.assign(approveUrl.toString())
+    } catch (error) {
+      setRedirectStatus('error')
+      setRedirectError(
+        error instanceof Error
+          ? error.message
+          : 'We could not open PayPal. Please try again.'
+      )
+    }
+  }
 
   if (!clientId) {
     if (configStatus === 'loading') {
@@ -303,6 +439,44 @@ export default function PayPalButtons({
         >
           {message}
         </p>
+      )}
+      {status === 'error' && (
+        <div className="mt-4 rounded-2xl border border-clay/30 bg-clay-pale/70 p-5 text-sm text-ink-soft">
+          <p className="mb-1 font-medium text-ink">
+            PayPal didn’t load in this browser.
+          </p>
+          <p>
+            This is usually an ad blocker or privacy setting. Try again, or
+            continue straight to PayPal’s secure checkout.
+          </p>
+          <div className="mt-4 flex flex-wrap gap-3">
+            <button
+              type="button"
+              onClick={retry}
+              className="btn-primary !px-5 !py-3"
+            >
+              Try again
+            </button>
+            <button
+              type="button"
+              onClick={startRedirectCheckout}
+              disabled={redirectStatus === 'starting'}
+              className="btn-ghost !px-5 !py-3 disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              {redirectStatus === 'starting'
+                ? 'Opening PayPal…'
+                : 'Continue to PayPal'}
+            </button>
+          </div>
+          {redirectError && (
+            <p
+              role="alert"
+              className="mt-3 rounded-xl bg-red-50 px-4 py-3 text-red-800"
+            >
+              {redirectError}
+            </p>
+          )}
+        </div>
       )}
       <p className="mt-4 text-xs leading-relaxed text-ink-muted">
         Payments are processed securely by PayPal. You do not need an account —

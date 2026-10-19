@@ -146,6 +146,9 @@ export interface CreatePayPalOrderInput {
   customId?: string
   customer: PayPalCustomer
   requiresShipping: boolean
+  /** Set for the SDK-free redirect flow. */
+  returnUrl?: string
+  cancelUrl?: string
 }
 
 export async function createPayPalOrder(
@@ -194,6 +197,8 @@ export async function createPayPalOrder(
       landing_page: 'NO_PREFERENCE',
       shipping_preference: input.requiresShipping ? 'GET_FROM_FILE' : 'NO_SHIPPING',
       user_action: 'PAY_NOW',
+      ...(input.returnUrl ? { return_url: input.returnUrl } : {}),
+      ...(input.cancelUrl ? { cancel_url: input.cancelUrl } : {}),
     },
   }
 

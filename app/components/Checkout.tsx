@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import Link from 'next/link'
 import {
   ArrowLeft,
@@ -17,6 +17,7 @@ import {
   PRODUCTS,
   formatGBP,
   getProduct,
+  isProductId,
   productsInCategory,
 } from '@/lib/products'
 import PayPalButtons from './PayPalButtons'
@@ -44,8 +45,10 @@ const inputClasses =
 
 export default function Checkout({
   initialProductId,
+  returnedOrderId,
 }: {
   initialProductId: string
+  returnedOrderId?: string
 }) {
   const [productId, setProductId] = useState(
     getProduct(initialProductId)?.id ?? 'single-session'
@@ -53,6 +56,11 @@ export default function Checkout({
   const product = getProduct(productId) ?? PRODUCTS[0]
   const [step, setStep] = useState<'details' | 'pay'>('details')
   const [receipt, setReceipt] = useState<Receipt | null>(null)
+  const [returnStatus, setReturnStatus] = useState<
+    'idle' | 'capturing' | 'error'
+  >(returnedOrderId ? 'capturing' : 'idle')
+  const [returnError, setReturnError] = useState('')
+  const captureStarted = useRef(false)
   const [error, setError] = useState('')
   const [form, setForm] = useState({
     name: '',
@@ -109,6 +117,142 @@ export default function Checkout({
   const handlePaymentError = useCallback((message: string) => {
     setError(message)
   }, [])
+
+  useEffect(() => {
+    if (!returnedOrderId || captureStarted.current) return
+    captureStarted.current = true
+
+    let cancelled = false
+    const storageKey = `leaf-checkout:${returnedOrderId}`
+    const payload: { orderID: string; items?: unknown; customer?: unknown } = {
+      orderID: returnedOrderId,
+    }
+    let savedProductId = productId
+
+    try {
+      const saved = sessionStorage.getItem(storageKey)
+      if (saved) {
+        const parsed = JSON.parse(saved) as {
+          items?: unknown
+          customer?: {
+            name?: unknown
+            email?: unknown
+            phone?: unknown
+            notes?: unknown
+          }
+          productId?: unknown
+        }
+
+        payload.items = parsed.items
+        payload.customer = parsed.customer
+
+        if (
+          typeof parsed.productId === 'string' &&
+          isProductId(parsed.productId)
+        ) {
+          savedProductId = parsed.productId
+          setProductId(parsed.productId)
+        }
+
+        if (parsed.customer && typeof parsed.customer === 'object') {
+          setForm({
+            name:
+              typeof parsed.customer.name === 'string'
+                ? parsed.customer.name
+                : '',
+            email:
+              typeof parsed.customer.email === 'string'
+                ? parsed.customer.email
+                : '',
+            phone:
+              typeof parsed.customer.phone === 'string'
+                ? parsed.customer.phone
+                : '',
+            notes:
+              typeof parsed.customer.notes === 'string'
+                ? parsed.customer.notes
+                : '',
+            consent: true,
+          })
+        }
+      }
+    } catch (error) {
+      console.warn('[checkout] could not read saved checkout details', error)
+    }
+
+    fetch('/api/paypal/capture-order', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    })
+      .then(async (response) => {
+        const data = (await response.json()) as {
+          error?: string
+          id?: string
+          status?: string
+          reference?: string
+          amount?: string
+          currency?: string
+          payerEmail?: string | null
+          summary?: string
+          downloads?: ReceiptDownload[]
+        }
+
+        if (!response.ok || data.status !== 'COMPLETED') {
+          throw new Error(
+            data.error || 'We could not confirm the PayPal payment.'
+          )
+        }
+
+        return data
+      })
+      .then((data) => {
+        if (cancelled) return
+
+        try {
+          sessionStorage.removeItem(storageKey)
+        } catch {
+          // Storage may be unavailable; the receipt is still shown below.
+        }
+
+        setReceipt({
+          id: data.id || returnedOrderId,
+          status: data.status || 'COMPLETED',
+          reference: data.reference || returnedOrderId,
+          amount: data.amount || '0.00',
+          currency: data.currency || 'GBP',
+          payerEmail: data.payerEmail ?? null,
+          summary: data.summary || '',
+          downloads: data.downloads || [],
+        })
+        setReturnStatus('idle')
+
+        try {
+          window.history.replaceState(
+            {},
+            '',
+            `/pay?product=${encodeURIComponent(savedProductId)}`
+          )
+        } catch {
+          // The receipt remains visible even if the URL cannot be rewritten.
+        }
+
+        window.scrollTo({ top: 120, behavior: 'smooth' })
+      })
+      .catch((error: unknown) => {
+        if (cancelled) return
+        setReturnStatus('error')
+        setReturnError(
+          error instanceof Error
+            ? error.message
+            : 'We could not confirm the PayPal payment.'
+        )
+      })
+
+    return () => {
+      cancelled = true
+    }
+  }, [returnedOrderId, productId])
 
   if (receipt) {
     const mailBody = [
@@ -237,6 +381,60 @@ export default function Checkout({
           Keep your PayPal receipt — it is your proof of payment. If anything
           looks wrong, email hello@leafcoaching.com.
         </p>
+      </div>
+    )
+  }
+
+  if (returnedOrderId && returnStatus === 'capturing') {
+    return (
+      <div className="mx-auto max-w-2xl rounded-[2rem] border hairline bg-white/80 p-8 text-center shadow-[0_30px_80px_-50px_rgba(20,50,35,0.5)] md:p-12">
+        <p className="eyebrow mb-4">Confirming payment</p>
+        <h2 className="font-serif text-4xl text-ink">One moment…</h2>
+        <p className="mx-auto mt-4 max-w-md text-ink-soft">
+          We are confirming your PayPal payment now. Please do not close this
+          page.
+        </p>
+        <div className="mx-auto mt-8 h-1.5 w-40 overflow-hidden rounded-full bg-forest/10">
+          <div className="h-full w-1/2 animate-pulse rounded-full bg-forest" />
+        </div>
+      </div>
+    )
+  }
+
+  if (returnedOrderId && returnStatus === 'error') {
+    return (
+      <div className="mx-auto max-w-2xl rounded-[2rem] border hairline bg-white/80 p-8 text-center shadow-[0_30px_80px_-50px_rgba(20,50,35,0.5)] md:p-12">
+        <p className="eyebrow mb-4">Payment update</p>
+        <h2 className="font-serif text-4xl text-ink">
+          We could not confirm your payment
+        </h2>
+        <p role="alert" className="mx-auto mt-4 max-w-lg text-ink-soft">
+          {returnError}
+        </p>
+        <p className="mx-auto mt-4 max-w-lg text-sm text-ink-muted">
+          If you were charged, email{' '}
+          <a
+            className="text-forest underline underline-offset-4"
+            href="mailto:hello@leafcoaching.com?subject=Payment%20confirmation"
+          >
+            hello@leafcoaching.com
+          </a>{' '}
+          with your PayPal receipt and we will sort it straight away.
+        </p>
+        <div className="mt-8 flex flex-wrap justify-center gap-3">
+          <Link
+            href={`/pay?product=${encodeURIComponent(productId)}`}
+            className="btn-primary"
+          >
+            Back to checkout
+          </Link>
+          <a
+            href="mailto:hello@leafcoaching.com?subject=Payment%20confirmation"
+            className="btn-ghost"
+          >
+            Email us
+          </a>
+        </div>
       </div>
     )
   }
@@ -503,6 +701,7 @@ export default function Checkout({
             )}
 
             <PayPalButtons
+              productId={product.id}
               items={items}
               customer={customer}
               onSuccess={handleSuccess}
