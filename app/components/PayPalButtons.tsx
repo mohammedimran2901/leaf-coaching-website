@@ -446,8 +446,15 @@ export default function PayPalButtons({
             PayPal didn’t load in this browser.
           </p>
           <p>
-            This is usually an ad blocker or privacy setting. Try again, or
-            continue straight to PayPal’s secure checkout.
+            This is usually an ad blocker or privacy setting. Try again,
+            continue straight to PayPal’s secure checkout, or email{' '}
+            <a
+              className="text-forest underline underline-offset-4"
+              href="mailto:hello@leafcoaching.com?subject=Payment%20for%20Leaf%20Coaching"
+            >
+              hello@leafcoaching.com
+            </a>{' '}
+            and we’ll arrange payment.
           </p>
           <div className="mt-4 flex flex-wrap gap-3">
             <button
