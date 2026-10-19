@@ -49,38 +49,38 @@ export const CURRENCY = 'GBP'
 export const PRODUCTS: Product[] = [
   {
     id: 'single-session',
-    name: '60-minute 1-2-1 life coaching session',
+    name: '45–60-minute 1-2-1 life coaching session',
     price: 75,
     category: 'coaching',
     summary:
-      'A confidential, culturally sensitive hour that meets you exactly where you are.',
+      'A confidential, culturally sensitive session of 45–60 minutes that meets you exactly where you are.',
     description:
-      'One-to-one coaching with Aamna Khokhar. We will arrange a time that suits you after checkout. Online or in person.',
-    meta: '60 minutes · online or in person',
+      'One-to-one coaching with Aamna Khokhar, with each session lasting 45–60 minutes. We will arrange a time that suits you after checkout. Online or in person.',
+    meta: '45–60 minutes · online or in person',
     badge: 'Most popular',
   },
   {
     id: 'three-session-bundle',
-    name: '3 × 60-minute life coaching sessions',
+    name: '3 × 45–60-minute life coaching sessions',
     price: 210,
     category: 'coaching',
     summary:
-      'Three sessions to build real momentum — and £15 saved against paying session by session.',
+      'Three sessions of 45–60 minutes to build real momentum — and £15 saved against paying session by session.',
     description:
-      'A focused three-session coaching journey with Aamna Khokhar. We will agree a rhythm together after checkout, with sessions used within three months. Online or in person.',
-    meta: '3 sessions · save £15',
+      'A focused three-session coaching journey with Aamna Khokhar, with each session lasting 45–60 minutes. We will agree a rhythm together after checkout, with sessions used within three months. Online or in person.',
+    meta: '3 sessions · 45–60 minutes each · save £15',
     badge: 'New',
   },
   {
     id: 'six-session-bundle',
-    name: '6 × 60-minute life coaching sessions',
+    name: '6 × 45–60-minute life coaching sessions',
     price: 420,
     category: 'coaching',
     summary:
-      'Six sessions of steady, supported growth — and £30 saved against paying week by week.',
+      'Six 45–60-minute sessions of steady, supported growth — and £30 saved against paying week by week.',
     description:
-      'A six-session coaching journey with Aamna Khokhar. Sessions can be used over six months; we will agree a rhythm together after checkout.',
-    meta: '6 sessions · save £30',
+      'A six-session coaching journey with Aamna Khokhar, with each session lasting 45–60 minutes. Sessions can be used over six months; we will agree a rhythm together after checkout.',
+    meta: '6 sessions · 45–60 minutes each · save £30',
     badge: 'Best value',
   },
   {

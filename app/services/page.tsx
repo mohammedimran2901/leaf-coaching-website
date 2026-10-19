@@ -9,9 +9,9 @@ const services = [
     title: '1-2-1 Life Coaching',
     description:
       'Personalised coaching sessions tailored to your unique goals, values and cultural background.',
-    per: 'per 60-minute session',
+    per: 'per 45–60-minute session',
     features: [
-      'A confidential, unhurried hour',
+      'A confidential, unhurried session of 45–60 minutes',
       'Personalised action plans',
       'Between-session support',
     ],
@@ -21,9 +21,9 @@ const services = [
     title: '3-Session Journey',
     description:
       'Three sessions with room to build momentum, join the dots and practise a different way forward.',
-    per: 'for three 60-minute sessions',
+    per: 'for three 45–60-minute sessions',
     features: [
-      'Three 60-minute sessions',
+      'Three 45–60-minute sessions',
       'A plan across the whole journey',
       'Save £15 against single sessions',
     ],

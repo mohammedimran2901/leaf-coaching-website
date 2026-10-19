@@ -17,7 +17,7 @@ const pillars = [
     icon: Compass,
     title: '1-2-1 life coaching',
     text: 'Personal, unhurried sessions built around your goals, values and cultural context — with a free discovery call before you commit.',
-    points: ['50-minute sessions', 'Personalised action plans', 'Between-session support'],
+    points: ['45–60-minute sessions', 'Personalised action plans', 'Between-session support'],
     href: '/services',
     cta: 'Explore coaching',
     tone: 'forest',
