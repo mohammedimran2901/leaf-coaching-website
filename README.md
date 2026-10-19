@@ -1,8 +1,9 @@
 # Leaf Coaching CIC — website
 
 A Next.js 14 (App Router) site for Leaf Coaching CIC: a warm, editorial
-homepage, service pages, and a PayPal checkout for sessions, workshops,
-membership and the *Be Melting Snow* book.
+homepage, service pages, and a PayPal checkout for sessions, bundles,
+workshops, membership, the *Be Melting Snow* book and the *Beyond the Role*
+digital workbook.
 
 ## Quick start
 
@@ -28,6 +29,7 @@ npm run lint       # next lint
 | `/` | Homepage — homage hero, marquee, story timeline, six pillars, impact, payment teaser, testimonials, booking CTA |
 | `/about` | Story, values and approach |
 | `/services` | Services and catalogue prices with direct **Pay & book** links |
+| `/books` | Books and workbooks, including the digital workbook and how delivery works |
 | `/pay` | Two-step checkout (details → PayPal) with a sticky order summary |
 | `/contact` | Contact form |
 
@@ -35,10 +37,12 @@ Deep links into checkout use `?product=`:
 
 ```
 /pay?product=single-session
+/pay?product=three-session-bundle
 /pay?product=six-session-bundle
 /pay?product=workshop-place
 /pay?product=dinner-club-month
 /pay?product=be-melting-snow
+/pay?product=beyond-the-role
 ```
 
 ## Payments
@@ -53,10 +57,36 @@ server ignores it.
 Flow:
 
 1. `/pay` collects name, email, phone and notes (plus consent).
-2. `PayPalButtons` calls `POST /api/paypal/create-order`.
+2. `PayPalButtons` calls `POST /api/paypal/create-order`. The route writes a
+   compact basket fingerprint into the order's `custom_id`.
 3. PayPal's popup handles approval; `POST /api/paypal/capture-order` captures
-   the payment server-side and returns a reference.
-4. The page shows a receipt with a `mailto:` follow-up link.
+   the payment server-side, re-reads the basket from `custom_id`, and checks the
+   captured amount against catalogue prices before fulfilling.
+4. The page shows a receipt with a `mailto:` follow-up link — and, for digital
+   products, a signed download link.
+
+### Digital downloads
+
+The workbook PDF lives at `private/downloads/beyond-the-role.pdf` — deliberately
+outside `public/`, so it cannot be fetched by guessing a URL. After a verified
+capture, `capture-order` issues an HMAC-signed link valid for **7 days**:
+
+```
+/api/download?token=<signed-token>
+```
+
+The token contains the PayPal order ID, product ID and expiry; changing any part
+of it invalidates the signature. The route streams the PDF with
+`Content-Disposition: attachment` and `no-store` caching.
+
+- `next.config.js` uses `outputFileTracingIncludes` so the PDF is bundled with
+  the `/api/download` function on Vercel. If you add another paid file, add it
+  under `private/` and register it in the product's `download` field.
+- `SITE_URL` is optional but recommended in production (e.g.
+  `https://www.leafcoaching.com`) so links are built with the canonical host.
+- If a customer loses the link, re-issue it from the PayPal order — or email
+  them the PDF from `private/`. Set `DOWNLOAD_SIGNING_SECRET` explicitly in
+  production; rotating it invalidates all existing links.
 
 ### Environment variables
 
@@ -68,7 +98,9 @@ Copy `.env.example` to `.env.local`:
 | `PAYPAL_CLIENT_ID` | Yes (for checkout) | Server client ID (may be the same value) |
 | `PAYPAL_CLIENT_SECRET` | Yes (for checkout) | Server secret — never expose publicly |
 | `PAYPAL_ENV` | No | `sandbox` (default) or `live` |
-| `PAYMENT_NOTIFICATION_WEBHOOK` | No | Optional JSON POST of captured orders for bookkeeping |
+| `PAYMENT_NOTIFICATION_WEBHOOK` | No | Optional JSON POST of captured orders for bookkeeping (includes issued download links) |
+| `DOWNLOAD_SIGNING_SECRET` | No | Signs download links. Falls back to `PAYPAL_CLIENT_SECRET`; set explicitly in production |
+| `SITE_URL` | No | Canonical public origin for download links. Defaults to the request host |
 
 Without `PAYPAL_CLIENT_ID` + `PAYPAL_CLIENT_SECRET`, the API routes return
 `503` and checkout falls back to an `hello@leafcoaching.com` email prompt, so
@@ -100,4 +132,7 @@ Never commit `.env.local`; it is ignored by git.
   `tailwind.config.js` and utility classes in `app/globals.css`.
 - PayPal callbacks are held in refs inside `PayPalButtons` so SDK re-renders
   never clear the button container.
+- The checkout picker is grouped by `PRODUCT_GROUPS` from `lib/products.ts`
+  (Coaching / Community / Books & workbooks).
 - The contact form posts to `app/api/contact/route.ts`.
+- Paid files belong in `private/downloads/`, never in `public/`.

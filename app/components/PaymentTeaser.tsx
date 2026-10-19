@@ -2,7 +2,11 @@ import Link from 'next/link'
 import { ArrowRight, Check, Lock, ShieldCheck } from 'lucide-react'
 import { PRODUCTS, formatGBP } from '@/lib/products'
 
-const featured = ['single-session', 'six-session-bundle', 'be-melting-snow']
+const featured = [
+  'single-session',
+  'three-session-bundle',
+  'six-session-bundle',
+]
   .map((id) => PRODUCTS.find((product) => product.id === id))
   .filter((product): product is (typeof PRODUCTS)[number] => Boolean(product))
 

@@ -7,6 +7,7 @@ import { Menu, X, ArrowUpRight } from 'lucide-react'
 const navLinks = [
   { name: 'About', href: '/about' },
   { name: 'Services', href: '/services' },
+  { name: 'Books', href: '/books' },
   { name: 'Pay & book', href: '/pay' },
   { name: 'Contact', href: '/contact' },
 ]
@@ -52,7 +53,7 @@ export default function Header() {
         </Link>
 
         {/* Desktop nav */}
-        <nav className="hidden md:flex items-center gap-9">
+        <nav className="hidden md:flex items-center gap-7">
           {navLinks.map((link) => (
             <Link
               key={link.name}
@@ -62,7 +63,7 @@ export default function Header() {
               {link.name}
             </Link>
           ))}
-          <Link href="/contact" className="btn-primary !px-6 !py-2.5">
+          <Link href="/contact" className="btn-primary !px-5 !py-2.5">
             Book a call <ArrowUpRight className="w-4 h-4" />
           </Link>
         </nav>

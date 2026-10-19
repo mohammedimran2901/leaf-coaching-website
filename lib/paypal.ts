@@ -11,6 +11,7 @@ const LIVE_API = 'https://api-m.paypal.com'
 export interface PayPalItem {
   name: string
   description: string
+  sku?: string
   quantity: number
   unitAmount: number
 }
@@ -137,6 +138,8 @@ export interface CreatePayPalOrderInput {
   items: PayPalItem[]
   total: number
   reference: string
+  /** Reference + compact basket, stored on the order for fulfilment. */
+  customId?: string
   customer: PayPalCustomer
   requiresShipping: boolean
 }
@@ -156,7 +159,7 @@ export async function createPayPalOrder(
     purchase_units: [
       {
         reference_id: input.reference,
-        custom_id: input.reference.slice(0, 127),
+        custom_id: (input.customId || input.reference).slice(0, 127),
         description: 'Leaf Coaching CIC — coaching, community and books'
           .slice(0, 127),
         amount: {
@@ -172,6 +175,7 @@ export async function createPayPalOrder(
         items: input.items.map((item) => ({
           name: item.name.slice(0, 127),
           description: item.description.slice(0, 127),
+          sku: item.sku?.slice(0, 127),
           quantity: String(item.quantity),
           unit_amount: {
             currency_code: 'GBP',

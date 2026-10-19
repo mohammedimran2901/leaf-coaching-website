@@ -6,7 +6,7 @@ import Checkout from '../components/Checkout'
 export const metadata: Metadata = {
   title: 'Pay & book | Leaf Coaching',
   description:
-    'Pay securely by PayPal or card for 1-2-1 coaching, workshops, the Halal Dinner Club and Be Melting Snow.',
+    'Pay securely by PayPal or card for 1-2-1 coaching, coaching bundles, workshops, the Halal Dinner Club, Be Melting Snow and the Beyond the Role workbook.',
 }
 
 export default function PayPage({
@@ -35,9 +35,10 @@ export default function PayPage({
               <em className="italic text-forest">securely</em>
             </h1>
             <p className="mt-7 max-w-2xl text-lg leading-relaxed text-ink-soft">
-              Choose a session, a bundle, a workshop or the book. Payment is
-              handled by PayPal, and we will be in touch within two working days
-              to arrange the details.
+              Choose a coaching session or bundle, a workshop, the Dinner Club,
+              the book or the digital workbook. Payment is handled by PayPal.
+              Digital downloads arrive straight away; everything else is
+              arranged with you within two working days.
             </p>
           </div>
           <div className="md:col-span-4">

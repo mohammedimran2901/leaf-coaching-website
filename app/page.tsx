@@ -5,6 +5,7 @@ import StoryTimeline from './components/StoryTimeline'
 import Pillars from './components/Pillars'
 import Impact from './components/Impact'
 import PaymentTeaser from './components/PaymentTeaser'
+import BooksSection from './components/BooksSection'
 import Testimonials from './components/Testimonials'
 import BookingCTA from './components/BookingCTA'
 import Footer from './components/Footer'
@@ -19,6 +20,7 @@ export default function Home() {
       <Pillars />
       <Impact />
       <PaymentTeaser />
+      <BooksSection />
       <Testimonials />
       <BookingCTA />
       <Footer />

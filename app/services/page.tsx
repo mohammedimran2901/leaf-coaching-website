@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { ArrowRight, BookOpen, Check } from 'lucide-react'
+import { ArrowRight, BookOpen, Check, Download } from 'lucide-react'
 import FAQ from '../components/FAQ'
 import { formatGBP, getProduct } from '@/lib/products'
 
@@ -14,6 +14,18 @@ const services = [
       'A confidential, unhurried hour',
       'Personalised action plans',
       'Between-session support',
+    ],
+  },
+  {
+    productId: 'three-session-bundle',
+    title: '3-Session Journey',
+    description:
+      'Three sessions with room to build momentum, join the dots and practise a different way forward.',
+    per: 'for three 60-minute sessions',
+    features: [
+      'Three 60-minute sessions',
+      'A plan across the whole journey',
+      'Save £15 against single sessions',
     ],
   },
   {
@@ -35,6 +47,7 @@ const services = [
 ]
 
 const book = getProduct('be-melting-snow')
+const workbook = getProduct('beyond-the-role')
 
 function priceFor(productId: string) {
   const product = getProduct(productId)
@@ -57,7 +70,7 @@ export default function ServicesPage() {
       </section>
 
       <section className="container-site pb-20 md:pb-28">
-        <div className="grid md:grid-cols-3 gap-6 lg:gap-8">
+        <div className="grid md:grid-cols-2 xl:grid-cols-4 gap-6 lg:gap-8">
           {services.map((service, i) => (
             <div
               key={service.title}
@@ -127,28 +140,45 @@ export default function ServicesPage() {
           ))}
         </div>
 
-        {book && (
-          <div className="mt-6 flex flex-col items-start justify-between gap-6 rounded-3xl border border-clay/25 bg-clay-pale/60 p-8 md:flex-row md:items-center md:p-10">
-            <div className="flex items-start gap-4">
+        {book && workbook && (
+          <div className="mt-6 grid gap-6 rounded-3xl border border-clay/25 bg-clay-pale/60 p-8 md:grid-cols-12 md:items-center md:p-10">
+            <div className="flex items-start gap-4 md:col-span-7">
               <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-forest text-sand">
                 <BookOpen className="h-5 w-5" />
               </span>
               <div>
                 <p className="text-[11px] uppercase tracking-widest2 text-clay">
-                  The book
+                  Books &amp; workbooks
                 </p>
                 <h2 className="mt-1 font-serif text-2xl text-ink md:text-3xl">
-                  {book.name}
+                  Words to take home
                 </h2>
                 <p className="mt-2 max-w-xl text-sm leading-relaxed text-ink-soft">
-                  {book.summary}
+                  {book.name} for perspective — and {workbook.name}, a 29-page
+                  relational patterns workbook, for the patterns underneath.
+                  {workbook.digital
+                    ? ' The workbook arrives as an instant PDF download.'
+                    : ''}
                 </p>
               </div>
             </div>
-            <div className="flex shrink-0 items-center gap-5">
-              <p className="font-serif text-3xl text-forest">{formatGBP(book.price)}</p>
-              <Link href={`/pay?product=${book.id}`} className="btn-primary">
-                Buy the book <ArrowRight className="w-4 h-4" />
+            <div className="flex flex-col gap-3 md:col-span-5">
+              <Link
+                href={`/pay?product=${workbook.id}`}
+                className="btn-primary w-full justify-between"
+              >
+                <span className="flex items-center gap-2">
+                  <Download className="h-4 w-4" /> Workbook ·{' '}
+                  {formatGBP(workbook.price)}
+                </span>
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+              <Link
+                href="/books"
+                className="inline-flex w-full items-center justify-between gap-2 rounded-full border border-forest/20 px-5 py-3 text-sm font-medium text-forest transition-colors hover:border-forest"
+              >
+                Browse books &amp; workbooks
+                <ArrowRight className="h-4 w-4" />
               </Link>
             </div>
           </div>

@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import {
   CheckoutError,
   describeLines,
+  encodeBasket,
   orderReference,
   validateCheckout,
 } from '@/lib/checkout'
@@ -40,6 +41,9 @@ export async function POST(request: Request) {
       items: checkout.items,
       total: checkout.total,
       reference,
+      // The basket travels with the order so capture can trust PayPal's copy
+      // of what was bought rather than the browser's.
+      customId: `${reference}|${encodeBasket(checkout.lines)}`,
       customer: checkout.customer,
       requiresShipping: checkout.requiresShipping,
     })

@@ -1,9 +1,60 @@
 import { NextResponse } from 'next/server'
-import { CheckoutError, validateCheckout } from '@/lib/checkout'
+import {
+  CheckoutError,
+  decodeBasket,
+  describeLines,
+  validateCheckout,
+  type CheckoutLine,
+} from '@/lib/checkout'
 import { capturePayPalOrder, isPayPalConfigured } from '@/lib/paypal'
+import {
+  DOWNLOAD_LINK_DAYS,
+  requestOrigin,
+  signDownloadToken,
+} from '@/lib/downloads'
+import { CURRENCY } from '@/lib/products'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
+
+interface IssuedDownload {
+  productId: string
+  name: string
+  url: string
+  expiresAt: string
+}
+
+function issueDownloads(
+  request: Request,
+  orderId: string,
+  lines: CheckoutLine[]
+): IssuedDownload[] {
+  const origin = requestOrigin(request)
+  const seen = new Set<string>()
+  const downloads: IssuedDownload[] = []
+
+  for (const { product } of lines) {
+    if (!product.digital || !product.download || seen.has(product.id)) continue
+    seen.add(product.id)
+
+    const signed = signDownloadToken(orderId, product.id)
+    if (!signed) {
+      console.error('[downloads] signing secret is not configured', {
+        productId: product.id,
+      })
+      continue
+    }
+
+    downloads.push({
+      productId: product.id,
+      name: product.name,
+      url: `${origin}/api/download?token=${encodeURIComponent(signed.token)}`,
+      expiresAt: signed.expiresAt,
+    })
+  }
+
+  return downloads
+}
 
 export async function POST(request: Request) {
   if (!isPayPalConfigured()) {
@@ -23,7 +74,11 @@ export async function POST(request: Request) {
     )
   }
 
-  const payload = body as { orderID?: unknown; items?: unknown; customer?: unknown }
+  const payload = body as {
+    orderID?: unknown
+    items?: unknown
+    customer?: unknown
+  }
   const orderID = typeof payload.orderID === 'string' ? payload.orderID : ''
 
   if (!/^[A-Z0-9]{6,32}$/i.test(orderID)) {
@@ -35,7 +90,8 @@ export async function POST(request: Request) {
 
   try {
     const order = await capturePayPalOrder(orderID)
-    const capture = order.purchase_units?.[0]?.payments?.captures?.[0]
+    const purchaseUnit = order.purchase_units?.[0]
+    const capture = purchaseUnit?.payments?.captures?.[0]
 
     if (order.status !== 'COMPLETED' || capture?.status !== 'COMPLETED') {
       return NextResponse.json(
@@ -47,33 +103,65 @@ export async function POST(request: Request) {
       )
     }
 
-    const reference = order.purchase_units?.[0]?.custom_id || orderID
+    // The basket was written onto the order at creation time. Prefer it over
+    // anything the browser sends now, so downloads cannot be claimed for a
+    // cheaper purchase.
+    const customId = purchaseUnit?.custom_id || ''
+    const [referencePart, basketPart] = customId.split('|')
+    const orderLines = decodeBasket(basketPart)
+    const reference = referencePart || orderID
+
     const amount = capture.amount?.value ?? '0.00'
     const currency = capture.amount?.currency_code ?? 'GBP'
 
-    // Re-validate the basket for the fulfilment notification. The capture has
-    // already succeeded at this point, so a validation failure must never be
-    // reported to the customer as a failed payment.
+    let checkout: ReturnType<typeof validateCheckout> | null = null
     let summary = ''
     let customer: unknown = null
+
     try {
-      const checkout = validateCheckout({
-        items: payload.items,
+      checkout = validateCheckout({
+        items: orderLines
+          ? orderLines.map(({ product, quantity }) => ({
+              id: product.id,
+              quantity,
+            }))
+          : payload.items,
         customer: payload.customer,
       })
-      summary = checkout.lines
-        .map(({ product, quantity }) =>
-          quantity > 1 ? `${quantity} x ${product.name}` : product.name
-        )
-        .join(', ')
+      summary = describeLines(checkout.lines)
       customer = checkout.customer
     } catch (error) {
       if (!(error instanceof CheckoutError)) throw error
       console.warn('[paypal] capture could not be matched to a catalogue item', {
         orderID,
+        customId,
         reason: error.message,
       })
     }
+
+    // Never issue a download unless the money taken matches the catalogue
+    // price for the basket recorded on the order.
+    const paid = Number(amount)
+    const amountVerified =
+      checkout !== null &&
+      currency === CURRENCY &&
+      Number.isFinite(paid) &&
+      Math.abs(paid - checkout.total) < 0.005
+
+    if (!amountVerified) {
+      console.warn('[paypal] captured amount did not match the basket', {
+        orderID,
+        customId,
+        expected: checkout?.total ?? null,
+        paid: amount,
+        currency,
+      })
+    }
+
+    const downloads =
+      amountVerified && checkout
+        ? issueDownloads(request, order.id, checkout.lines)
+        : []
 
     const webhook = process.env.PAYMENT_NOTIFICATION_WEBHOOK
     if (webhook) {
@@ -90,6 +178,7 @@ export async function POST(request: Request) {
             currency,
             summary,
             customer,
+            downloads,
             capturedAt: new Date().toISOString(),
           }),
         })
@@ -105,6 +194,8 @@ export async function POST(request: Request) {
       amount,
       currency,
       summary,
+      downloads: downloads.map((download) => download.productId),
+      amountVerified,
     })
 
     return NextResponse.json({
@@ -115,6 +206,8 @@ export async function POST(request: Request) {
       currency,
       payerEmail: order.payer?.email_address ?? null,
       summary,
+      downloads,
+      downloadLinkDays: DOWNLOAD_LINK_DAYS,
     })
   } catch (error) {
     console.error('[paypal] capture failed', { orderID, error })

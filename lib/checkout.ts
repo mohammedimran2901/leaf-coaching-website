@@ -92,6 +92,7 @@ export function validateCheckout(body: unknown): ValidatedCheckout {
   const items: PayPalItem[] = lines.map(({ product, quantity }) => ({
     name: product.name,
     description: product.meta,
+    sku: product.id,
     quantity,
     unitAmount: product.price,
   }))
@@ -122,6 +123,48 @@ export function describeLines(lines: CheckoutLine[]): string {
       quantity > 1 ? `${quantity} × ${product.name}` : product.name
     )
     .join(', ')
+}
+
+/**
+ * A compact, server-owned record of what was purchased.
+ *
+ * This travels with the PayPal order as `custom_id`, so a capture can be
+ * matched back to exact catalogue lines without trusting the browser.
+ * Format: `0:1,3:2` — catalogue index : quantity.
+ */
+export function encodeBasket(lines: CheckoutLine[]): string {
+  return lines
+    .map(({ product, quantity }) => {
+      const index = PRODUCTS.findIndex((entry) => entry.id === product.id)
+      return `${index}:${quantity}`
+    })
+    .join(',')
+}
+
+export function decodeBasket(
+  value: string | null | undefined
+): CheckoutLine[] | null {
+  if (!value) return null
+
+  const lines: CheckoutLine[] = []
+
+  for (const entry of value.split(',')) {
+    const match = /^(\d{1,2}):(\d{1,2})$/.exec(entry)
+    if (!match) return null
+
+    const product = PRODUCTS[Number(match[1])]
+    const quantity = Number(match[2])
+
+    if (!product || !Number.isInteger(quantity) || quantity < 1 || quantity > 10) {
+      return null
+    }
+
+    if (lines.some((line) => line.product.id === product.id)) return null
+
+    lines.push({ product, quantity })
+  }
+
+  return lines.length > 0 ? lines : null
 }
 
 export const CATALOGUE_IDS = PRODUCTS.map((product) => product.id)

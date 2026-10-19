@@ -6,13 +6,27 @@ import {
   ArrowLeft,
   ArrowRight,
   Check,
+  Download,
   Leaf,
   Lock,
   Mail,
   ShieldCheck,
 } from 'lucide-react'
-import { PRODUCTS, formatGBP, getProduct } from '@/lib/products'
+import {
+  PRODUCT_GROUPS,
+  PRODUCTS,
+  formatGBP,
+  getProduct,
+  productsInCategory,
+} from '@/lib/products'
 import PayPalButtons from './PayPalButtons'
+
+interface ReceiptDownload {
+  productId: string
+  name: string
+  url: string
+  expiresAt: string
+}
 
 interface Receipt {
   id: string
@@ -22,6 +36,7 @@ interface Receipt {
   currency: string
   payerEmail: string | null
   summary: string
+  downloads?: ReceiptDownload[]
 }
 
 const inputClasses =
@@ -103,6 +118,7 @@ export default function Checkout({
       `Reference: ${receipt.reference}`,
       `PayPal order: ${receipt.id}`,
       receipt.summary ? `Item: ${receipt.summary}` : '',
+      ...(receipt.downloads?.map((download) => `Download: ${download.url}`) ?? []),
       ``,
       `Please let me know the next steps.`,
       ``,
@@ -124,9 +140,9 @@ export default function Checkout({
             </p>
             <h2 className="mt-2 font-serif text-4xl">Thank you, {form.name.split(' ')[0]}.</h2>
             <p className="mt-3 max-w-md text-sand/75">
-              Your payment has gone through and a receipt is on its way from
-              PayPal. We will be in touch within 2 working days to arrange the
-              next step.
+              {receipt.downloads && receipt.downloads.length > 0
+                ? 'Your payment has gone through and your download is ready below. A PayPal receipt is on its way to your inbox.'
+                : 'Your payment has gone through and a receipt is on its way from PayPal. We will be in touch within 2 working days to arrange the next step.'}
             </p>
           </div>
           <dl className="space-y-4 px-8 py-8 text-sm">
@@ -151,6 +167,47 @@ export default function Checkout({
               <dd className="font-mono text-xs text-ink-soft">{receipt.id}</dd>
             </div>
           </dl>
+
+          {receipt.downloads && receipt.downloads.length > 0 && (
+            <div className="border-t hairline bg-clay-pale/45 px-8 py-8">
+              <p className="text-xs uppercase tracking-widest text-clay">
+                Your digital download
+              </p>
+              <div className="mt-4 space-y-4">
+                {receipt.downloads.map((download) => (
+                  <div
+                    key={download.productId}
+                    className="flex flex-col gap-4 rounded-2xl border border-clay/25 bg-white/70 p-5 sm:flex-row sm:items-center sm:justify-between"
+                  >
+                    <div>
+                      <p className="font-serif text-xl text-ink">
+                        {download.name}
+                      </p>
+                      <p className="mt-1 text-sm text-ink-soft">
+                        PDF · link valid until{' '}
+                        {new Date(download.expiresAt).toLocaleDateString(
+                          'en-GB',
+                          { day: 'numeric', month: 'long', year: 'numeric' }
+                        )}
+                      </p>
+                    </div>
+                    <a
+                      href={download.url}
+                      className="btn-primary shrink-0"
+                      download
+                    >
+                      <Download className="h-4 w-4" /> Download PDF
+                    </a>
+                  </div>
+                ))}
+              </div>
+              <p className="mt-4 text-xs leading-relaxed text-ink-muted">
+                Please save the PDF to your device now. The link works for seven
+                days. If it expires, email hello@leafcoaching.com with your
+                PayPal receipt and we will send it again.
+              </p>
+            </div>
+          )}
         </div>
 
         <div className="mt-6 flex flex-col gap-3 sm:flex-row">
@@ -160,10 +217,20 @@ export default function Checkout({
               `Paid booking ${receipt.reference}`
             )}&body=${encodeURIComponent(mailBody)}`}
           >
-            <Mail className="h-4 w-4" /> Send us your booking details
+            <Mail className="h-4 w-4" />{' '}
+            {receipt.downloads && receipt.downloads.length > 0
+              ? 'Email us about your order'
+              : 'Send us your booking details'}
           </a>
-          <Link href="/" className="btn-ghost flex-1 justify-center">
-            Back to home
+          <Link
+            href={
+              receipt.downloads && receipt.downloads.length > 0 ? '/books' : '/'
+            }
+            className="btn-ghost flex-1 justify-center"
+          >
+            {receipt.downloads && receipt.downloads.length > 0
+              ? 'Browse books & workbooks'
+              : 'Back to home'}
           </Link>
         </div>
         <p className="mt-5 text-center text-xs text-ink-muted">
@@ -181,61 +248,77 @@ export default function Checkout({
           <form onSubmit={handleContinue} noValidate className="space-y-8">
             <fieldset>
               <legend className="eyebrow mb-4">1. Choose what to pay for</legend>
-              <div className="space-y-3">
-                {PRODUCTS.map((option) => {
-                  const selected = option.id === product.id
+              <div className="space-y-7">
+                {PRODUCT_GROUPS.map((group) => {
+                  const options = productsInCategory(group.id)
+                  if (options.length === 0) return null
                   return (
-                    <label
-                      key={option.id}
-                      className={`flex cursor-pointer items-start gap-4 rounded-2xl border p-5 transition-all duration-300 ${
-                        selected
-                          ? 'border-forest bg-white shadow-[0_18px_45px_-32px_rgba(20,50,35,0.55)]'
-                          : 'border-ink/10 bg-white/45 hover:border-forest/40 hover:bg-white/70'
-                      }`}
-                    >
-                      <input
-                        type="radio"
-                        name="product"
-                        value={option.id}
-                        checked={selected}
-                        onChange={() => {
-                          setProductId(option.id)
-                          setError('')
-                        }}
-                        className="sr-only"
-                      />
-                      <span
-                        aria-hidden="true"
-                        className={`mt-1 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border transition-colors ${
-                          selected
-                            ? 'border-forest bg-forest text-sand'
-                            : 'border-ink/25 bg-transparent'
-                        }`}
-                      >
-                        {selected && <Check className="h-3 w-3" />}
-                      </span>
-                      <span className="min-w-0 flex-1">
-                        <span className="flex flex-wrap items-center gap-2">
-                          <span className="font-serif text-lg text-ink">
-                            {option.name}
-                          </span>
-                          {option.badge && (
-                            <span className="rounded-full bg-clay-pale px-2.5 py-1 text-[10px] font-medium uppercase tracking-widest text-clay">
-                              {option.badge}
-                            </span>
-                          )}
-                        </span>
-                        <span className="mt-1 block text-sm leading-relaxed text-ink-soft">
-                          {option.summary}
-                        </span>
-                        <span className="mt-2 block text-[11px] uppercase tracking-widest text-ink-muted">
-                          {option.meta}
-                        </span>
-                      </span>
-                      <span className="shrink-0 font-serif text-xl text-forest">
-                        {formatGBP(option.price)}
-                      </span>
-                    </label>
+                    <div key={group.id}>
+                      <div className="mb-3 flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 border-b hairline pb-2">
+                        <h3 className="font-serif text-xl text-ink">
+                          {group.label}
+                        </h3>
+                        <p className="text-xs text-ink-muted">{group.blurb}</p>
+                      </div>
+                      <div className="space-y-3">
+                        {options.map((option) => {
+                          const selected = option.id === product.id
+                          return (
+                            <label
+                              key={option.id}
+                              className={`flex cursor-pointer items-start gap-4 rounded-2xl border p-5 transition-all duration-300 ${
+                                selected
+                                  ? 'border-forest bg-white shadow-[0_18px_45px_-32px_rgba(20,50,35,0.55)]'
+                                  : 'border-ink/10 bg-white/45 hover:border-forest/40 hover:bg-white/70'
+                              }`}
+                            >
+                              <input
+                                type="radio"
+                                name="product"
+                                value={option.id}
+                                checked={selected}
+                                onChange={() => {
+                                  setProductId(option.id)
+                                  setError('')
+                                }}
+                                className="sr-only"
+                              />
+                              <span
+                                aria-hidden="true"
+                                className={`mt-1 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border transition-colors ${
+                                  selected
+                                    ? 'border-forest bg-forest text-sand'
+                                    : 'border-ink/25 bg-transparent'
+                                }`}
+                              >
+                                {selected && <Check className="h-3 w-3" />}
+                              </span>
+                              <span className="min-w-0 flex-1">
+                                <span className="flex flex-wrap items-center gap-2">
+                                  <span className="font-serif text-lg text-ink">
+                                    {option.name}
+                                  </span>
+                                  {option.badge && (
+                                    <span className="rounded-full bg-clay-pale px-2.5 py-1 text-[10px] font-medium uppercase tracking-widest text-clay">
+                                      {option.badge}
+                                    </span>
+                                  )}
+                                </span>
+                                <span className="mt-1 block text-sm leading-relaxed text-ink-soft">
+                                  {option.summary}
+                                </span>
+                                <span className="mt-2 block text-[11px] uppercase tracking-widest text-ink-muted">
+                                  {option.meta}
+                                </span>
+                              </span>
+                              <span className="shrink-0 font-serif text-xl text-forest">
+                                {formatGBP(option.price)}
+                              </span>
+                            </label>
+                          )
+                        })}
+                      </div>
+                    </div>
                   )
                 })}
               </div>
@@ -437,7 +520,9 @@ export default function Checkout({
                 </li>
                 <li className="flex gap-3">
                   <Check className="mt-0.5 h-4 w-4 shrink-0 text-clay-light" />
-                  We reply within 2 working days to arrange your booking
+                  {product.digital
+                    ? 'Your download link appears instantly after payment'
+                    : 'We reply within 2 working days to arrange your booking'}
                 </li>
               </ul>
             </div>
@@ -448,6 +533,12 @@ export default function Checkout({
               <p>
                 This is a physical book. After payment we will email you to
                 arrange collection or delivery.
+              </p>
+            ) : product.digital ? (
+              <p>
+                This is a digital workbook. Your PDF download link appears on the
+                confirmation screen straight after payment and stays valid for
+                seven days.
               </p>
             ) : (
               <p>

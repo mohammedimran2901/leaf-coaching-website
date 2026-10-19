@@ -18,6 +18,12 @@ interface PayPalButtonsProps {
     currency: string
     payerEmail: string | null
     summary: string
+    downloads?: Array<{
+      productId: string
+      name: string
+      url: string
+      expiresAt: string
+    }>
   }) => void
   onError: (message: string) => void
 }
@@ -154,6 +160,12 @@ export default function PayPalButtons({
                 currency?: string
                 payerEmail?: string | null
                 summary?: string
+                downloads?: Array<{
+                  productId: string
+                  name: string
+                  url: string
+                  expiresAt: string
+                }>
               }
 
               if (!response.ok || data.status !== 'COMPLETED') {
@@ -170,6 +182,7 @@ export default function PayPalButtons({
                 currency: data.currency || 'GBP',
                 payerEmail: data.payerEmail ?? null,
                 summary: data.summary || '',
+                downloads: data.downloads || [],
               })
             } catch (error) {
               const errorMessage =
