@@ -29,6 +29,7 @@ export default function Footer() {
               <li><Link href="/about" className="text-sand/75 hover:text-sand transition-colors">About</Link></li>
               <li><Link href="/services" className="text-sand/75 hover:text-sand transition-colors">Services</Link></li>
               <li><Link href="/books" className="text-sand/75 hover:text-sand transition-colors">Books &amp; workbooks</Link></li>
+              <li><Link href="/tea-stories" className="text-sand/75 hover:text-sand transition-colors">Tea Stories</Link></li>
               <li><Link href="/pay" className="text-sand/75 hover:text-sand transition-colors">Pay &amp; book</Link></li>
               <li><Link href="/contact" className="text-sand/75 hover:text-sand transition-colors">Contact</Link></li>
             </ul>

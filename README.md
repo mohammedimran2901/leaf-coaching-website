@@ -30,6 +30,10 @@ npm run lint       # next lint
 | `/about` | Story, values and approach |
 | `/services` | Services and catalogue prices with direct **Pay & book** links |
 | `/books` | Books and workbooks, including all three digital editions and how delivery works |
+| `/tea-stories` | Tea Stories — an editorial index of featured and published stories |
+| `/tea-stories/[slug]` | A single Tea Story with image, body and related stories |
+| `/admin/login` | Staff sign-in (no public link) |
+| `/admin/tea-stories` | Staff dashboard for creating, editing, publishing and deleting stories |
 | `/pay` | Two-step checkout (details → PayPal) with a sticky order summary |
 | `/contact` | Contact form |
 
@@ -45,6 +49,43 @@ Deep links into checkout use `?product=`:
 /pay?product=beyond-the-role
 /pay?product=how-to-make-peace-with-your-parents
 ```
+
+## Tea Stories & staff admin
+
+`/tea-stories` is a public index of published stories, and each story has its
+own page at `/tea-stories/[slug]`. Stories are written and managed at
+`/admin/tea-stories` behind a password-protected staff area.
+
+Set these in `.env.local` (see [Environment variables](#environment-variables)):
+
+```bash
+ADMIN_PASSWORD="a long, unique password"
+ADMIN_SESSION_SECRET="$(openssl rand -base64 32)"
+```
+
+Locally, without `BLOB_READ_WRITE_TOKEN`, stories are written to
+`.data/tea-stories/` and images to `public/uploads/tea-stories/`. Both are
+git-ignored. In production, connect a **Vercel Blob** store to the project so
+uploads and story JSON persist across deployments; without it the admin returns
+a `503` instead of silently losing data.
+
+Staff can:
+
+- create a story with a title, web address, short introduction, body and cover
+  image;
+- save it as a draft or publish it immediately;
+- replace the image or edit any field later;
+- delete a story and its image.
+
+Cover images may be JPG, PNG, WebP or AVIF. Large photos (over about 3.2 MB) are
+resized in the browser before upload; the server accepts up to 4 MB. Story
+bodies support a small Markdown subset: blank lines for paragraphs, `##`
+headings, `>` quotes, `-` lists, `**bold**` and `*italic*`.
+
+Sessions are signed with HMAC-SHA256, last 8 hours, and use an `httpOnly`,
+`sameSite=lax` cookie that is `secure` in production. Login attempts are rate
+limited in memory (6 per IP per 10 minutes). Set `ADMIN_SESSION_SECRET`
+explicitly so changing the password does not invalidate every session.
 
 ## Payments
 
@@ -144,6 +185,9 @@ Copy `.env.example` to `.env.local`:
 | `PAYMENT_NOTIFICATION_WEBHOOK` | No | Optional JSON POST of captured orders for bookkeeping (includes issued download links) |
 | `DOWNLOAD_SIGNING_SECRET` | No | Signs download links. Falls back to `PAYPAL_CLIENT_SECRET`; set explicitly in production |
 | `SITE_URL` | No | Canonical public origin for download links. Defaults to the request host |
+| `ADMIN_PASSWORD` | Yes (for staff admin) | Password for `/admin`; keep it long and unique |
+| `ADMIN_SESSION_SECRET` | Recommended | Signs the 8-hour staff session cookie. Generate with `openssl rand -base64 32`; falls back to `ADMIN_PASSWORD` |
+| `BLOB_READ_WRITE_TOKEN` | Yes (in production) | Vercel Blob token for Tea Stories and images. Omitted locally uses `.data/` + `public/uploads/tea-stories/`; on Vercel, omission disables saving |
 
 The browser resolves the client ID from `/api/paypal/config`, which reads
 `PAYPAL_CLIENT_ID` at runtime. A missing or stale `NEXT_PUBLIC_*` build variable
@@ -170,6 +214,7 @@ Never commit `.env.local`; it is ignored by git.
 - **Icons**: Lucide React
 - **Language**: TypeScript
 - **Payments**: PayPal Orders v2 REST API (no SDK dependency server-side)
+- **Storage**: Vercel Blob for Tea Stories (local filesystem fallback in development)
 - **Hosting**: Vercel (or any Node host)
 
 ## Project notes
