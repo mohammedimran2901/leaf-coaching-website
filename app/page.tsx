@@ -7,6 +7,7 @@ import Impact from './components/Impact'
 import PaymentTeaser from './components/PaymentTeaser'
 import BooksSection from './components/BooksSection'
 import TeaStoriesSection from './components/TeaStoriesSection'
+import InstagramSection from './components/InstagramSection'
 import Testimonials from './components/Testimonials'
 import BookingCTA from './components/BookingCTA'
 import Footer from './components/Footer'
@@ -23,6 +24,7 @@ export default function Home() {
       <PaymentTeaser />
       <BooksSection />
       <TeaStoriesSection />
+      <InstagramSection />
       <Testimonials />
       <BookingCTA />
       <Footer />

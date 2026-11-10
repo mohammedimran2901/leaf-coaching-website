@@ -17,7 +17,7 @@ export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 
 const NOT_CONFIGURED =
-  'Card payments are not switched on yet. Email hello@leafcoaching.com and we will arrange payment directly.'
+  'Card payments are not switched on yet. Email leafcoachingcic@gmail.com and we will arrange payment directly.'
 
 export async function POST(request: Request) {
   if (!isPayPalConfigured()) {
@@ -93,7 +93,7 @@ export async function POST(request: Request) {
     return NextResponse.json(
       {
         error:
-          'We could not start the PayPal payment. Please try again, or email hello@leafcoaching.com.',
+          'We could not start the PayPal payment. Please try again, or email leafcoachingcic@gmail.com.',
       },
       { status: 502 }
     )

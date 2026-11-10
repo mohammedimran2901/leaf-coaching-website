@@ -28,7 +28,7 @@ function errorPage(message: string, status: number) {
     <main>
       <h1>We could not open that download</h1>
       <p>${message}</p>
-      <p>Email <a href="mailto:hello@leafcoaching.com?subject=Workbook%20download">hello@leafcoaching.com</a> with your PayPal receipt and we will send your workbook straight away.</p>
+      <p>Email <a href="mailto:leafcoachingcic@gmail.com?subject=Workbook%20download">leafcoachingcic@gmail.com</a> with your PayPal receipt and we will send your workbook straight away.</p>
     </main>
   </body>
 </html>`,

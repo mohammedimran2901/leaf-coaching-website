@@ -309,7 +309,7 @@ export default function PayPalButtons({
           onError: (error) => {
             console.error('[paypal] buttons error', error)
             setMessage(
-              'PayPal hit a problem. Please try again, or email hello@leafcoaching.com and we will help.'
+              'PayPal hit a problem. Please try again, or email leafcoachingcic@gmail.com and we will help.'
             )
           },
         })
@@ -416,9 +416,9 @@ export default function PayPalButtons({
           Please refresh the page and try again. If it keeps happening, email{' '}
           <a
             className="text-forest underline underline-offset-4"
-            href="mailto:hello@leafcoaching.com?subject=Payment%20for%20Leaf%20Coaching"
+            href="mailto:leafcoachingcic@gmail.com?subject=Payment%20for%20Leaf%20Coaching"
           >
-            hello@leafcoaching.com
+            leafcoachingcic@gmail.com
           </a>{' '}
           and we will arrange your payment and booking directly.
         </p>
@@ -450,9 +450,9 @@ export default function PayPalButtons({
             continue straight to PayPal’s secure checkout, or email{' '}
             <a
               className="text-forest underline underline-offset-4"
-              href="mailto:hello@leafcoaching.com?subject=Payment%20for%20Leaf%20Coaching"
+              href="mailto:leafcoachingcic@gmail.com?subject=Payment%20for%20Leaf%20Coaching"
             >
-              hello@leafcoaching.com
+              leafcoachingcic@gmail.com
             </a>{' '}
             and we’ll arrange payment.
           </p>

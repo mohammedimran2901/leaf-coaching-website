@@ -26,7 +26,7 @@ npm run lint       # next lint
 
 | Route | Purpose |
 | --- | --- |
-| `/` | Homepage — homage hero, marquee, story timeline, six pillars, impact, payment teaser, testimonials, booking CTA |
+| `/` | Homepage — homage hero, marquee, story timeline, six pillars, impact, payment teaser, Tea Stories, Instagram, testimonials, booking CTA |
 | `/about` | Story, values and approach |
 | `/services` | Services and catalogue prices with direct **Pay & book** links |
 | `/books` | Books and workbooks, including all three digital editions and how delivery works |
@@ -185,6 +185,12 @@ Copy `.env.example` to `.env.local`:
 | `PAYMENT_NOTIFICATION_WEBHOOK` | No | Optional JSON POST of captured orders for bookkeeping (includes issued download links) |
 | `DOWNLOAD_SIGNING_SECRET` | No | Signs download links. Falls back to `PAYPAL_CLIENT_SECRET`; set explicitly in production |
 | `SITE_URL` | No | Canonical public origin for download links. Defaults to the request host |
+| `RESEND_API_KEY` | No | Enables email notifications for contact enquiries and captured payments. Without it, submissions are only logged |
+| `EMAIL_FROM` | Recommended | Verified Resend sender, e.g. `Leaf Coaching <notifications@leafcoaching.com>`. Defaults to `onboarding@resend.dev`, which only delivers to the account owner |
+| `NOTIFICATION_EMAIL` | No | Inbox that receives notifications. Defaults to `leafcoachingcic@gmail.com` |
+| `INSTAGRAM_ACCESS_TOKEN` | No | Long-lived Instagram Graph API token for the homepage feed. Without it, a designed follow panel is shown |
+| `INSTAGRAM_USER_ID` | No | Optional Instagram business account ID. Omit to use the `/me/media` endpoint |
+| `INSTAGRAM_API_VERSION` | No | Graph API version, defaults to `v23.0` |
 | `ADMIN_PASSWORD` | Yes (for staff admin) | Password for `/admin`; keep it long and unique |
 | `ADMIN_SESSION_SECRET` | Recommended | Signs the 8-hour staff session cookie. Generate with `openssl rand -base64 32`; falls back to `ADMIN_PASSWORD` |
 | `BLOB_READ_WRITE_TOKEN` | Yes (in production) | Vercel Blob token for Tea Stories and images. Omitted locally uses `.data/` + `public/uploads/tea-stories/`; on Vercel, omission disables saving |
@@ -193,7 +199,7 @@ The browser resolves the client ID from `/api/paypal/config`, which reads
 `PAYPAL_CLIENT_ID` at runtime. A missing or stale `NEXT_PUBLIC_*` build variable
 therefore cannot silently disable the PayPal buttons. Without
 `PAYPAL_CLIENT_ID` + `PAYPAL_CLIENT_SECRET`, the API routes return `503` and
-checkout shows an `hello@leafcoaching.com` contact prompt, so the site remains
+checkout shows a `leafcoachingcic@gmail.com` contact prompt, so the site remains
 usable before payments go live.
 
 ### Going live
@@ -205,6 +211,19 @@ usable before payments go live.
    works on mobile.
 
 Never commit `.env.local`; it is ignored by git.
+
+### Notifications & Instagram
+
+Contact enquiries and captured PayPal payments are emailed to
+`leafcoachingcic@gmail.com` through [Resend](https://resend.com). Set
+`RESEND_API_KEY` in production, plus `EMAIL_FROM` on a verified sending domain.
+Email is best-effort: a provider outage never blocks a form submission or a
+completed payment, and the details remain in the server logs for follow-up.
+
+Set `INSTAGRAM_ACCESS_TOKEN` (and optionally `INSTAGRAM_USER_ID`) to show the
+latest four posts on the homepage. Without a token, the section renders a
+designed "follow us" panel linking to
+<https://www.instagram.com/leaf_coaching>.
 
 ## Tech stack
 

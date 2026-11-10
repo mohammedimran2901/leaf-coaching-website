@@ -348,7 +348,7 @@ export default function Checkout({
               </div>
               <p className="mt-4 text-xs leading-relaxed text-ink-muted">
                 Please save the PDF to your device now. The link works for seven
-                days. If it expires, email hello@leafcoaching.com with your
+                days. If it expires, email leafcoachingcic@gmail.com with your
                 PayPal receipt and we will send it again.
               </p>
             </div>
@@ -358,7 +358,7 @@ export default function Checkout({
         <div className="mt-6 flex flex-col gap-3 sm:flex-row">
           <a
             className="btn-primary flex-1 justify-center"
-            href={`mailto:hello@leafcoaching.com?subject=${encodeURIComponent(
+            href={`mailto:leafcoachingcic@gmail.com?subject=${encodeURIComponent(
               `Paid booking ${receipt.reference}`
             )}&body=${encodeURIComponent(mailBody)}`}
           >
@@ -380,7 +380,7 @@ export default function Checkout({
         </div>
         <p className="mt-5 text-center text-xs text-ink-muted">
           Keep your PayPal receipt — it is your proof of payment. If anything
-          looks wrong, email hello@leafcoaching.com.
+          looks wrong, email leafcoachingcic@gmail.com.
         </p>
       </div>
     )
@@ -417,9 +417,9 @@ export default function Checkout({
             If you were charged, email{' '}
             <a
               className="text-forest underline underline-offset-4"
-              href="mailto:hello@leafcoaching.com?subject=Payment%20confirmation"
+              href="mailto:leafcoachingcic@gmail.com?subject=Payment%20confirmation"
             >
-              hello@leafcoaching.com
+              leafcoachingcic@gmail.com
             </a>{' '}
             with your PayPal receipt and we will sort it straight away.
           </p>
@@ -432,7 +432,7 @@ export default function Checkout({
             Back to checkout
           </Link>
           <a
-            href="mailto:hello@leafcoaching.com?subject=Payment%20confirmation"
+            href="mailto:leafcoachingcic@gmail.com?subject=Payment%20confirmation"
             className="btn-ghost"
           >
             Email us
@@ -780,10 +780,10 @@ export default function Checkout({
                 Not sure this is the right fit? Book a free 30-minute discovery
                 call first — email{' '}
                 <a
-                  href="mailto:hello@leafcoaching.com"
+                  href="mailto:leafcoachingcic@gmail.com"
                   className="font-medium text-forest underline underline-offset-4"
                 >
-                  hello@leafcoaching.com
+                  leafcoachingcic@gmail.com
                 </a>
                 .
               </p>

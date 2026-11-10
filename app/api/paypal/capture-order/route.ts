@@ -12,6 +12,7 @@ import {
   requestOrigin,
   signDownloadToken,
 } from '@/lib/downloads'
+import { escapeHtml, paragraphHtml, sendNotificationEmail } from '@/lib/email'
 import { CURRENCY } from '@/lib/products'
 
 export const runtime = 'nodejs'
@@ -163,6 +164,84 @@ export async function POST(request: Request) {
         ? issueDownloads(request, order.id, checkout.lines)
         : []
 
+    const customerDetails =
+      customer && typeof customer === 'object'
+        ? (customer as Record<string, unknown>)
+        : {}
+    const customerName =
+      typeof customerDetails.name === 'string' ? customerDetails.name : ''
+    const customerEmail =
+      typeof customerDetails.email === 'string' ? customerDetails.email : ''
+    const customerPhone =
+      typeof customerDetails.phone === 'string' ? customerDetails.phone : ''
+    const customerNotes =
+      typeof customerDetails.notes === 'string' ? customerDetails.notes : ''
+    const payerEmail = order.payer?.email_address ?? ''
+
+    const paymentRows: Array<[string, string]> = [
+      ['Reference', reference || orderID],
+      ['PayPal order', order.id],
+      ['Amount', `${currency} ${amount}`],
+      ['Items', summary || 'Could not match the order to the catalogue'],
+      ['Name', customerName || '(Not supplied)'],
+      ['Email', customerEmail || '(Not supplied)'],
+      ['Phone', customerPhone || '(Not supplied)'],
+      ['Notes', customerNotes || '(None)'],
+      ['PayPal payer email', payerEmail || '(Not supplied)'],
+      [
+        'Downloads issued',
+        downloads.length > 0
+          ? downloads.map((download) => download.name).join(', ')
+          : 'None',
+      ],
+    ]
+
+    const paymentText = [
+      'New payment received',
+      '',
+      ...paymentRows.map(([label, value]) => `${label}: ${value}`),
+      '',
+      ...downloads.map((download) => `${download.name}: ${download.url}`),
+    ].join('\n')
+
+    const paymentHtml = `
+      <div style="font-family:Arial,sans-serif;color:#2B2622;line-height:1.6;max-width:720px">
+        <h1 style="font-size:22px;margin:0 0 6px">New payment received</h1>
+        <p style="margin:0 0 20px;color:#5C554D">A PayPal payment has been captured on the website.</p>
+        <table role="presentation" cellpadding="0" cellspacing="0" style="width:100%;border-collapse:collapse">
+          ${paymentRows
+            .map(
+              ([label, value]) => `
+                <tr>
+                  <th align="left" valign="top" style="padding:10px 16px 10px 0;border-bottom:1px solid #e7dfd2;white-space:nowrap">${escapeHtml(label)}</th>
+                  <td style="padding:10px 0;border-bottom:1px solid #e7dfd2">${paragraphHtml(value)}</td>
+                </tr>`
+            )
+            .join('')}
+        </table>
+        ${
+          downloads.length > 0
+            ? `<p style="margin:20px 0 8px;font-weight:bold">Download links</p>
+               <ul style="margin:0;padding-left:20px">
+                 ${downloads
+                   .map(
+                     (download) =>
+                       `<li><a href="${escapeHtml(download.url)}">${escapeHtml(download.name)}</a> (expires ${escapeHtml(download.expiresAt)})</li>`
+                   )
+                   .join('')}
+               </ul>`
+            : ''
+        }
+      </div>
+    `
+
+    const notificationSent = await sendNotificationEmail({
+      subject: `New payment received — ${reference || orderID}`,
+      text: paymentText,
+      html: paymentHtml,
+      replyTo: customerEmail || undefined,
+    })
+
     const webhook = process.env.PAYMENT_NOTIFICATION_WEBHOOK
     if (webhook) {
       try {
@@ -196,6 +275,7 @@ export async function POST(request: Request) {
       summary,
       downloads: downloads.map((download) => download.productId),
       amountVerified,
+      notificationSent,
     })
 
     return NextResponse.json({
@@ -214,7 +294,7 @@ export async function POST(request: Request) {
     return NextResponse.json(
       {
         error:
-          'We could not confirm the PayPal payment. If you were charged, email hello@leafcoaching.com with your PayPal receipt and we will sort it straight away.',
+          'We could not confirm the PayPal payment. If you were charged, email leafcoachingcic@gmail.com with your PayPal receipt and we will sort it straight away.',
       },
       { status: 502 }
     )

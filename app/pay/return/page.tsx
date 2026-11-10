@@ -37,9 +37,9 @@ export default function PayReturnPage({
               Please return to checkout and try again, or email{' '}
               <a
                 className="text-forest underline underline-offset-4"
-                href="mailto:hello@leafcoaching.com?subject=Payment%20confirmation"
+                href="mailto:leafcoachingcic@gmail.com?subject=Payment%20confirmation"
               >
-                hello@leafcoaching.com
+                leafcoachingcic@gmail.com
               </a>{' '}
               if you have already paid.
             </p>

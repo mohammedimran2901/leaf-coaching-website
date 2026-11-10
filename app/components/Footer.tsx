@@ -43,7 +43,7 @@ export default function Footer() {
             <ul className="space-y-3 text-[15px]">
               <li>
                 <a
-                  href="https://instagram.com/leaf_coaching"
+                  href="https://www.instagram.com/leaf_coaching"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-sand/75 hover:text-sand transition-colors"
@@ -52,8 +52,8 @@ export default function Footer() {
                 </a>
               </li>
               <li>
-                <a href="mailto:hello@leafcoaching.com" className="text-sand/75 hover:text-sand transition-colors">
-                  hello@leafcoaching.com
+                <a href="mailto:leafcoachingcic@gmail.com" className="text-sand/75 hover:text-sand transition-colors">
+                  leafcoachingcic@gmail.com
                 </a>
               </li>
             </ul>

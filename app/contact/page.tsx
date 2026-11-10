@@ -13,13 +13,16 @@ export default function ContactPage() {
     email: '',
     service: '',
     message: '',
+    website: '',
   })
   const [submitted, setSubmitted] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [error, setError] = useState('')
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsSubmitting(true)
+    setError('')
     try {
       const res = await fetch('/api/contact', {
         method: 'POST',
@@ -28,10 +31,16 @@ export default function ContactPage() {
       })
       if (res.ok) {
         setSubmitted(true)
-        setFormData({ name: '', email: '', service: '', message: '' })
+        setFormData({ name: '', email: '', service: '', message: '', website: '' })
+      } else {
+        const data = (await res.json().catch(() => null)) as
+          | { error?: string }
+          | null
+        setError(data?.error || 'We could not send that message. Please try again.')
       }
     } catch (error) {
       console.error('Error:', error)
+      setError('We could not send that message. Please try again.')
     } finally {
       setIsSubmitting(false)
     }
@@ -66,6 +75,16 @@ export default function ContactPage() {
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-5">
+                <input
+                  type="text"
+                  name="website"
+                  tabIndex={-1}
+                  autoComplete="off"
+                  aria-hidden="true"
+                  className="hidden"
+                  value={formData.website}
+                  onChange={(e) => setFormData({ ...formData, website: e.target.value })}
+                />
                 <div className="grid md:grid-cols-2 gap-5">
                   <div>
                     <label htmlFor="name" className="block text-sm font-medium text-ink mb-2">Name</label>
@@ -94,6 +113,14 @@ export default function ContactPage() {
                   <textarea id="message" rows={5} placeholder="Tell us a little about what you're looking for…" className={inputClasses}
                     value={formData.message} onChange={(e) => setFormData({ ...formData, message: e.target.value })} />
                 </div>
+                {error && (
+                  <p
+                    role="alert"
+                    className="rounded-2xl border border-clay/30 bg-clay-pale/60 px-5 py-3 text-sm text-ink"
+                  >
+                    {error}
+                  </p>
+                )}
                 <button type="submit" disabled={isSubmitting} className="btn-primary w-full disabled:opacity-60">
                   {isSubmitting ? 'Sending…' : 'Request your free call'}
                   {!isSubmitting && <ArrowRight className="w-4 h-4" />}
@@ -109,13 +136,13 @@ export default function ContactPage() {
               <ul className="space-y-5 text-[15px]">
                 <li className="flex items-center gap-3">
                   <Mail className="w-4 h-4 text-clay-light shrink-0" />
-                  <a href="mailto:hello@leafcoaching.com" className="hover:text-clay-light transition-colors">
-                    hello@leafcoaching.com
+                  <a href="mailto:leafcoachingcic@gmail.com" className="hover:text-clay-light transition-colors">
+                    leafcoachingcic@gmail.com
                   </a>
                 </li>
                 <li className="flex items-center gap-3">
                   <Instagram className="w-4 h-4 text-clay-light shrink-0" />
-                  <a href="https://instagram.com/leaf_coaching" target="_blank" rel="noopener noreferrer"
+                  <a href="https://www.instagram.com/leaf_coaching" target="_blank" rel="noopener noreferrer"
                     className="hover:text-clay-light transition-colors">
                     @leaf_coaching
                   </a>
