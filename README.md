@@ -115,6 +115,18 @@ product's `preview` field in `lib/products.ts`. Unlike the paid PDFs, they live
 under `public/`. If a workbook is revised, regenerate both the paid file and its
 preview so the sample stays in step.
 
+### Workbook cover images
+
+The shop covers are exported from page 1 of each paid workbook PDF and saved as
+1200 × 1600 WebP files under `public/images/`:
+
+- `beyond-the-role-cover.webp`
+- `how-to-make-peace-with-your-parents-cover.webp`
+
+They are referenced by the optional `image` field on each product in
+`lib/products.ts` and shown on `/books`, the homepage and the checkout summary.
+If a PDF cover changes, re-export its WebP so the shop artwork stays current.
+
 ### Environment variables
 
 Copy `.env.example` to `.env.local`:

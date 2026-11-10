@@ -6,12 +6,12 @@ import {
   Check,
   Download,
   FileText,
-  Heart,
   Leaf,
   ShieldCheck,
 } from 'lucide-react'
 import Header from '../components/Header'
 import Footer from '../components/Footer'
+import WorkbookCover from '../components/WorkbookCover'
 import { formatGBP, getProduct } from '@/lib/products'
 
 export const metadata: Metadata = {
@@ -76,7 +76,7 @@ export default function BooksPage() {
             {book && (
               <article className="flex flex-col rounded-[2rem] border border-ink/10 bg-sand p-7 md:p-9">
                 <div className="flex flex-col gap-7 sm:flex-row">
-                  <div className="relative flex aspect-[3/4] w-full max-w-[11.5rem] shrink-0 flex-col justify-between overflow-hidden rounded-l-sm rounded-r-xl bg-forest p-5 text-sand shadow-[0_30px_60px_-38px_rgba(20,40,25,0.9)]">
+                  <div className="relative flex aspect-[3/4] w-full max-w-[11.5rem] shrink-0 flex-col justify-between overflow-hidden rounded-l-sm rounded-r-xl bg-forest p-5 text-sand shadow-[0_30px_60px_-38px_rgba(20,40,25,0.9)] sm:self-start">
                     <span className="absolute inset-y-0 left-0 w-2.5 bg-black/20" />
                     <p className="flex items-center gap-1.5 text-[9px] uppercase tracking-widest2 text-sand/70">
                       <Leaf className="h-3 w-3" /> Leaf Coaching
@@ -142,30 +142,15 @@ export default function BooksPage() {
             )}
 
             {workbook && (
-              <article className="flex flex-col rounded-[2rem] border border-clay/30 bg-clay-pale/55 p-7 md:p-9">
+              <article className="flex flex-col rounded-[2rem] border border-clay/35 bg-gradient-to-br from-clay-pale/85 via-sand to-[#E4EADB] p-7 md:p-9">
                 <div className="flex flex-col gap-7 sm:flex-row">
-                  <div className="relative flex aspect-[3/4] w-full max-w-[11.5rem] shrink-0 flex-col justify-between overflow-hidden rounded-l-sm rounded-r-xl border border-forest/15 bg-[#EFE7D8] p-5 text-forest shadow-[0_30px_60px_-42px_rgba(20,40,25,0.8)]">
-                    <span className="absolute inset-y-0 left-0 w-2.5 bg-clay/30" />
-                    <p className="flex items-center gap-1.5 text-[9px] uppercase tracking-widest2 text-clay">
-                      <FileText className="h-3 w-3" /> Workbook
-                    </p>
-                    <div>
-                      <p className="text-[9px] uppercase tracking-widest text-clay">
-                        Aamna Khokhar
-                      </p>
-                      <p className="mt-2 font-serif text-[1.85rem] leading-[0.95]">
-                        Beyond
-                        <br />
-                        the Role
-                      </p>
-                      <p className="mt-3 text-[9px] uppercase tracking-widest text-ink-muted">
-                        A relational patterns workbook
-                      </p>
-                    </div>
-                    <p className="text-[9px] uppercase tracking-widest text-ink-muted">
-                      30 pages · PDF
-                    </p>
-                  </div>
+                  {workbook.image && (
+                    <WorkbookCover
+                      image={workbook.image}
+                      className="aspect-[3/4] w-full max-w-[12rem] sm:self-start"
+                      sizes="(max-width: 640px) 70vw, 192px"
+                    />
+                  )}
 
                   <div className="flex flex-1 flex-col">
                     <div className="flex flex-wrap items-center gap-2">
@@ -249,32 +234,15 @@ export default function BooksPage() {
             )}
 
             {peace && (
-              <article className="flex flex-col rounded-[2rem] border border-forest/20 bg-white/55 p-7 md:p-9 lg:col-span-2">
+              <article className="flex flex-col rounded-[2rem] border border-forest/20 bg-gradient-to-br from-[#E7EBDD] via-sand to-clay-pale/75 p-7 md:p-9 lg:col-span-2">
                 <div className="flex flex-col gap-7 sm:flex-row">
-                  <div className="relative flex aspect-[3/4] w-full max-w-[11.5rem] shrink-0 flex-col justify-between overflow-hidden rounded-l-sm rounded-r-xl bg-forest p-5 text-sand shadow-[0_30px_60px_-42px_rgba(20,40,25,0.9)]">
-                    <span className="absolute inset-y-0 left-0 w-2.5 bg-black/20" />
-                    <p className="flex items-center gap-1.5 text-[9px] uppercase tracking-widest2 text-clay-light">
-                      <Heart className="h-3 w-3" /> Six-week programme
-                    </p>
-                    <div>
-                      <p className="text-[9px] uppercase tracking-widest text-clay-light">
-                        Aamna Khokhar
-                      </p>
-                      <p className="mt-2 font-serif text-[1.45rem] leading-[0.98]">
-                        How to Make
-                        <br />
-                        Peace with
-                        <br />
-                        <em className="italic text-clay-light">Your Parents</em>
-                      </p>
-                      <p className="mt-3 text-[9px] uppercase tracking-widest text-sand/60">
-                        A self-guided workbook
-                      </p>
-                    </div>
-                    <p className="text-[9px] uppercase tracking-widest text-sand/60">
-                      34 pages · PDF
-                    </p>
-                  </div>
+                  {peace.image && (
+                    <WorkbookCover
+                      image={peace.image}
+                      className="aspect-[3/4] w-full max-w-[12rem] sm:self-start"
+                      sizes="(max-width: 640px) 70vw, 192px"
+                    />
+                  )}
 
                   <div className="flex flex-1 flex-col">
                     <div className="flex flex-wrap items-center gap-2">

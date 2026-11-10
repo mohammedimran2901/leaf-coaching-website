@@ -21,6 +21,7 @@ import {
   productsInCategory,
 } from '@/lib/products'
 import PayPalButtons from './PayPalButtons'
+import WorkbookCover from './WorkbookCover'
 
 interface ReceiptDownload {
   productId: string
@@ -719,6 +720,13 @@ export default function Checkout({
           <div className="overflow-hidden rounded-[2rem] border hairline bg-forest text-sand">
             <div className="p-7 md:p-8">
               <p className="text-xs uppercase tracking-widest2 text-sand/55">Your order</p>
+              {product.image && (
+                <WorkbookCover
+                  image={product.image}
+                  className="mt-5 h-28 w-[5.25rem]"
+                  sizes="84px"
+                />
+              )}
               <h2 className="mt-3 font-serif text-2xl leading-snug">{product.name}</h2>
               <p className="mt-2 text-sm text-sand/65">{product.meta}</p>
               <div className="mt-6 flex items-baseline justify-between border-t border-sand/15 pt-5">

@@ -33,6 +33,15 @@ export interface DigitalPreview {
   pages: number
 }
 
+export interface ProductImage {
+  /** Public path to the cover image. */
+  src: string
+  /** Descriptive alt text for the cover. */
+  alt: string
+  width: number
+  height: number
+}
+
 export interface Product {
   id: ProductId
   name: string
@@ -54,6 +63,8 @@ export interface Product {
   download?: DigitalDownload
   /** Free sample of the first chapter, served from /public. */
   preview?: DigitalPreview
+  /** Cover image used in the shop and on the books page. */
+  image?: ProductImage
 }
 
 export const CURRENCY = 'GBP'
@@ -152,6 +163,12 @@ export const PRODUCTS: Product[] = [
       label: 'Read chapter one free',
       pages: 4,
     },
+    image: {
+      src: '/images/beyond-the-role-cover.webp',
+      alt: 'Beyond the Role workbook cover — cream background with green foliage, blossom and a bird',
+      width: 1200,
+      height: 1600,
+    },
   },
   {
     id: 'how-to-make-peace-with-your-parents',
@@ -175,6 +192,12 @@ export const PRODUCTS: Product[] = [
       file: '/downloads/how-to-make-peace-with-your-parents-chapter-1-preview.pdf',
       label: 'Read chapter one free',
       pages: 5,
+    },
+    image: {
+      src: '/images/how-to-make-peace-with-your-parents-cover.webp',
+      alt: 'How to Make Peace with Your Parents workbook cover — cream background with blossom branches and two birds',
+      width: 1200,
+      height: 1600,
     },
   },
 ]

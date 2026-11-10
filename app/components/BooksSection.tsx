@@ -1,5 +1,6 @@
 import Link from 'next/link'
-import { ArrowRight, Download, FileText, Heart, Leaf } from 'lucide-react'
+import { ArrowRight, Download, FileText, Leaf } from 'lucide-react'
+import WorkbookCover from './WorkbookCover'
 import { formatGBP, getProduct } from '@/lib/products'
 
 export default function BooksSection() {
@@ -91,9 +92,13 @@ export default function BooksSection() {
               href={`/pay?product=${workbook.id}`}
               className="group flex flex-col gap-5 rounded-[1.75rem] border border-forest bg-forest p-6 text-sand transition-all duration-500 ease-soft hover:-translate-y-1 hover:bg-forest-deep hover:shadow-[0_24px_60px_-30px_rgba(20,40,25,0.65)] sm:flex-row sm:items-center md:p-7"
             >
-              <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-sand/10 text-clay-light">
-                <FileText className="h-6 w-6" />
-              </span>
+              {workbook.image && (
+                <WorkbookCover
+                  image={workbook.image}
+                  className="h-28 w-[5.25rem]"
+                  sizes="84px"
+                />
+              )}
               <span className="min-w-0 flex-1">
                 <span className="flex flex-wrap items-center gap-2">
                   <span className="text-[10px] uppercase tracking-widest text-clay-light">
@@ -135,9 +140,13 @@ export default function BooksSection() {
               href={`/pay?product=${peace.id}`}
               className="group flex flex-col gap-5 rounded-[1.75rem] border border-clay/25 bg-clay-pale/50 p-6 transition-all duration-500 ease-soft hover:-translate-y-1 hover:border-clay/40 hover:bg-clay-pale/70 hover:shadow-[0_24px_60px_-40px_rgba(196,116,74,0.4)] sm:flex-row sm:items-center md:p-7"
             >
-              <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-clay/15 text-clay">
-                <Heart className="h-6 w-6" />
-              </span>
+              {peace.image && (
+                <WorkbookCover
+                  image={peace.image}
+                  className="h-28 w-[5.25rem]"
+                  sizes="84px"
+                />
+              )}
               <span className="min-w-0 flex-1">
                 <span className="flex flex-wrap items-center gap-2">
                   <span className="text-[10px] uppercase tracking-widest text-clay">
