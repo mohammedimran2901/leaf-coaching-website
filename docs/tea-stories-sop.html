@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Leaf Coaching — Adding a Tea Story (SOP)</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=Manrope:wght@400;500;600;700&display=swap');
+
+  :root {
+    --forest: #1F3D2B;
+    --forest-deep: #142819;
+    --forest-soft: #3A5C45;
+    --clay: #C4744A;
+    --clay-pale: #F3DFD2;
+    --sand: #F6F1E7;
+    --sand-deep: #EDE5D6;
+    --ink: #2B2622;
+    --ink-soft: #5C554D;
+    --ink-muted: #8A8178;
+    --line: rgba(43, 38, 34, 0.13);
+    --serif: 'Fraunces', Georgia, serif;
+    --sans: 'Manrope', system-ui, -apple-system, sans-serif;
+  }
+
+  * { box-sizing: border-box; }
+  @page { size: A4; margin: 0; }
+  html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body {
+    margin: 0;
+    background: #d8d1c5;
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 9.6pt;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+  p { margin: 0; }
+  a { color: var(--forest); text-decoration: none; }
+  strong { font-weight: 700; }
+  em { font-style: italic; }
+
+  .page {
+    width: 210mm;
+    height: 296.8mm;
+    position: relative;
+    overflow: hidden;
+    padding: 15mm 17mm 13mm;
+    background: var(--sand);
+    page-break-after: always;
+    break-after: page;
+  }
+  .page:last-child { page-break-after: auto; break-after: auto; }
+
+  .page::before {
+    content: '';
+    position: absolute;
+    right: -44mm;
+    top: 18mm;
+    width: 88mm;
+    height: 88mm;
+    border: 0.35mm solid rgba(31, 61, 43, 0.08);
+    border-radius: 50%;
+    pointer-events: none;
+  }
+  .page::after {
+    content: '';
+    position: absolute;
+    left: -30mm;
+    bottom: -34mm;
+    width: 70mm;
+    height: 70mm;
+    border-radius: 50%;
+    background: rgba(31, 61, 43, 0.035);
+    pointer-events: none;
+  }
+
+  .content { position: relative; z-index: 2; }
+
+  .eyebrow {
+    font-family: var(--sans);
+    font-size: 7.4pt;
+    font-weight: 700;
+    letter-spacing: 0.21em;
+    text-transform: uppercase;
+    color: var(--clay);
+  }
+  .eyebrow.light { color: rgba(246, 241, 231, 0.62); }
+
+  h1, h2, h3 { font-family: var(--serif); font-weight: 500; margin: 0; letter-spacing: -0.025em; }
+  h1 { font-size: 31pt; line-height: 1.05; color: var(--ink); }
+  h2 { font-size: 15.5pt; line-height: 1.15; color: var(--ink); }
+  h3 { font-size: 11.5pt; line-height: 1.25; color: var(--ink); }
+  .italic { font-style: italic; }
+
+  .page-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 10mm; margin-bottom: 7mm; }
+  .page-head .step {
+    flex: 0 0 auto;
+    min-width: 13mm;
+    height: 13mm;
+    border-radius: 50%;
+    background: var(--forest);
+    color: var(--sand);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--serif);
+    font-size: 15pt;
+  }
+  .page-head h1 { font-size: 27pt; max-width: 145mm; }
+  .page-head .lede { margin-top: 3.2mm; max-width: 148mm; color: var(--ink-soft); font-size: 9.8pt; line-height: 1.6; }
+
+  .rule { height: 0.35mm; background: var(--line); margin: 6mm 0; }
+  .rule.short { width: 34mm; background: var(--clay); height: 0.55mm; margin: 5mm 0; }
+
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 6mm; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4mm; }
+
+  .card {
+    background: rgba(255,255,255,0.62);
+    border: 0.3mm solid var(--line);
+    border-radius: 4.5mm;
+    padding: 5.2mm;
+  }
+  .card.soft { background: rgba(237, 229, 214, 0.55); }
+  .card.dark { background: var(--forest); color: var(--sand); border-color: transparent; }
+  .card h3 { margin-bottom: 1.5mm; }
+  .card p { color: var(--ink-soft); font-size: 9pt; }
+  .card.dark p { color: rgba(246,241,231,0.72); }
+
+  .callout {
+    border-left: 1.2mm solid var(--clay);
+    background: rgba(196, 116, 74, 0.09);
+    border-radius: 0 3.5mm 3.5mm 0;
+    padding: 4.2mm 5mm;
+    color: #553220;
+  }
+  .callout strong { color: #412516; }
+  .callout .label {
+    display: block;
+    font-size: 7.2pt;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--clay);
+    margin-bottom: 1.2mm;
+  }
+  .callout.forest {
+    border-left-color: var(--forest);
+    background: rgba(31, 61, 43, 0.07);
+    color: var(--ink-soft);
+  }
+  .callout.forest .label { color: var(--forest); }
+
+  .url-box {
+    background: var(--forest);
+    color: var(--sand);
+    border-radius: 4.5mm;
+    padding: 5mm 5.5mm;
+  }
+  .url-box .label {
+    font-size: 7pt;
+    letter-spacing: 0.17em;
+    text-transform: uppercase;
+    color: rgba(246,241,231,0.58);
+    margin-bottom: 1.3mm;
+  }
+  .url-box .url {
+    font-family: var(--serif);
+    font-size: 13.2pt;
+    line-height: 1.25;
+    color: var(--sand);
+  }
+  .url-box .note { font-size: 7.8pt; color: rgba(246,241,231,0.58); margin-top: 1mm; }
+  .url-box a.url { display: inline-block; color: var(--sand); text-decoration: none; }
+  a.journal-url { display: inline-block; font-family: var(--serif); font-size: 11.2pt; color: var(--forest); margin-top: 1.5mm; text-decoration: none; white-space: nowrap; }
+
+  .steps { margin: 0; padding: 0; list-style: none; counter-reset: step; }
+  .steps > li {
+    position: relative;
+    padding-left: 9.5mm;
+    margin: 0 0 3.2mm;
+    color: var(--ink-soft);
+    font-size: 9.3pt;
+    line-height: 1.55;
+  }
+  .steps > li::before {
+    counter-increment: step;
+    content: counter(step);
+    position: absolute;
+    left: 0;
+    top: 0.2mm;
+    width: 5.8mm;
+    height: 5.8mm;
+    border-radius: 50%;
+    background: rgba(31,61,43,0.1);
+    color: var(--forest);
+    font-weight: 700;
+    font-size: 7.5pt;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .steps strong { color: var(--ink); }
+
+  .checks { margin: 0; padding: 0; list-style: none; }
+  .checks li {
+    position: relative;
+    padding-left: 7.5mm;
+    margin-bottom: 2.4mm;
+    color: var(--ink-soft);
+    font-size: 9.1pt;
+  }
+  .checks li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.7mm;
+    width: 3.6mm;
+    height: 3.6mm;
+    border: 0.45mm solid var(--forest-soft);
+    border-radius: 1mm;
+    background: rgba(255,255,255,0.55);
+  }
+
+  .shot {
+    display: block;
+    width: 100%;
+    border: 0.35mm solid rgba(43,38,34,0.15);
+    border-radius: 3.2mm;
+    box-shadow: 0 2.2mm 6mm rgba(20,40,25,0.12);
+    background: white;
+  }
+  .caption {
+    margin-top: 2mm;
+    font-size: 7.5pt;
+    color: var(--ink-muted);
+    line-height: 1.45;
+  }
+  .caption strong { color: var(--ink-soft); }
+
+  .kicker {
+    display: inline-block;
+    padding: 1mm 2.6mm;
+    border-radius: 99mm;
+    background: rgba(31,61,43,0.09);
+    color: var(--forest);
+    font-size: 7pt;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  table { width: 100%; border-collapse: collapse; }
+  th, td { text-align: left; padding: 2.2mm 2.6mm; border-bottom: 0.3mm solid var(--line); vertical-align: top; }
+  th {
+    font-size: 7.1pt;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--ink-muted);
+    font-weight: 700;
+    background: rgba(237,229,214,0.5);
+  }
+  td { font-size: 8.6pt; color: var(--ink-soft); line-height: 1.45; }
+  td strong { color: var(--ink); }
+  tr:last-child td { border-bottom: none; }
+
+  code {
+    font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', monospace;
+    font-size: 8.1pt;
+    background: rgba(43,38,34,0.07);
+    border-radius: 1mm;
+    padding: 0.4mm 1.2mm;
+    color: var(--forest);
+  }
+
+  .footer {
+    position: absolute;
+    left: 17mm;
+    right: 17mm;
+    bottom: 7.5mm;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 6.8pt;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    z-index: 3;
+  }
+  .footer .mark { display: inline-flex; align-items: center; gap: 2mm; }
+  .leaf {
+    width: 4.2mm;
+    height: 4.2mm;
+    border-radius: 50%;
+    background: var(--forest);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+  }
+  .leaf svg { width: 2.6mm; height: 2.6mm; stroke: var(--sand); }
+
+  .cover {
+    background: var(--forest);
+    color: var(--sand);
+    padding: 20mm 18mm 17mm;
+  }
+  .cover::before {
+    right: -55mm;
+    top: -25mm;
+    width: 150mm;
+    height: 150mm;
+    border-color: rgba(246,241,231,0.1);
+    border-width: 0.3mm;
+  }
+  .cover::after {
+    left: auto;
+    right: 22mm;
+    bottom: -48mm;
+    width: 95mm;
+    height: 95mm;
+    background: rgba(246,241,231,0.045);
+  }
+  .cover .brand { display: flex; align-items: center; gap: 3mm; font-family: var(--serif); font-size: 16pt; }
+  .cover .brand .leaf { width: 7.2mm; height: 7.2mm; background: rgba(246,241,231,0.14); }
+  .cover .brand .leaf svg { width: 4.2mm; height: 4.2mm; }
+  .cover .top { display: flex; justify-content: space-between; align-items: flex-start; }
+  .cover .top .tag { font-size: 7pt; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(246,241,231,0.55); text-align: right; line-height: 1.8; }
+  .cover .hero { margin-top: 49mm; max-width: 155mm; }
+  .cover h1 { color: var(--sand); font-size: 55pt; line-height: 0.98; font-weight: 400; }
+  .cover h1 em { color: rgba(246,241,231,0.72); }
+  .cover .hero p { margin-top: 7mm; max-width: 128mm; font-size: 11.5pt; line-height: 1.65; color: rgba(246,241,231,0.7); }
+  .cover .meta {
+    position: absolute;
+    left: 18mm;
+    right: 18mm;
+    bottom: 17mm;
+    display: grid;
+    grid-template-columns: 1.25fr 1fr;
+    gap: 8mm;
+    align-items: end;
+    z-index: 3;
+  }
+  .cover .meta .info { font-size: 7.6pt; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(246,241,231,0.5); line-height: 2; }
+  .cover .meta .info strong { display: block; color: rgba(246,241,231,0.88); font-weight: 600; }
+  .cover .meta .url-box { background: rgba(246,241,231,0.08); border: 0.3mm solid rgba(246,241,231,0.18); }
+  .cover .meta .url-box .url { font-size: 12pt; }
+
+  .toc { display: grid; grid-template-columns: 1fr 1fr; gap: 3mm 8mm; }
+  .toc a { display: flex; justify-content: space-between; gap: 4mm; padding: 2.4mm 0; border-bottom: 0.3mm solid var(--line); font-size: 9.3pt; color: var(--ink-soft); }
+  .toc a span:first-child { color: var(--ink); }
+  .toc a span:last-child { color: var(--ink-muted); font-size: 8pt; }
+
+  .number-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4mm; }
+  .number-card { padding: 4.4mm; border-radius: 4mm; background: rgba(255,255,255,0.62); border: 0.3mm solid var(--line); }
+  .number-card .n { font-family: var(--serif); font-size: 21pt; color: var(--clay); line-height: 1; }
+  .number-card h3 { font-size: 9.6pt; margin-top: 2mm; }
+  .number-card p { font-size: 8pt; margin-top: 1mm; }
+
+  .split-figure { display: grid; grid-template-columns: 1.45fr 0.85fr; gap: 6mm; align-items: start; }
+  .small-note { font-size: 7.7pt; color: var(--ink-muted); line-height: 1.5; }
+
+  .tag-list { display: flex; flex-wrap: wrap; gap: 1.6mm; margin-top: 2mm; }
+  .tag { background: rgba(31,61,43,0.08); color: var(--forest); border-radius: 99mm; padding: 1mm 2.4mm; font-size: 7.4pt; font-weight: 600; }
+
+  .avoid-break { break-inside: avoid; page-break-inside: avoid; }
+</style>
+</head>
+<body>
+
+<!-- 01 · COVER -->
+<section class="page cover">
+  <div class="content">
+    <div class="top">
+      <div class="brand">
+        <span class="leaf"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg></span>
+        Leaf Coaching
+      </div>
+      <div class="tag">Staff procedure<br>Website &amp; journal</div>
+    </div>
+
+    <div class="hero">
+      <p class="eyebrow light">Tea Stories · Standard operating procedure</p>
+      <h1 style="margin-top:7mm;">Adding a<br><em>tea story.</em></h1>
+      <p>A plain-English guide to writing, publishing and caring for stories on the Leaf Coaching website — from signing in to checking the live page.</p>
+    </div>
+  </div>
+
+  <div class="meta">
+    <div class="info">
+      <strong>Version 1.0</strong>
+      Issued 10 November 2026<br>
+      Owner: Leaf Coaching website
+    </div>
+    <div class="url-box">
+      <div class="label">Staff entrance</div>
+      <a class="url" href="https://www.leafcoaching.com/admin/login">www.leafcoaching.com/admin/login</a>
+      <div class="note">Bookmark this page. Staff password required.</div>
+    </div>
+  </div>
+</section>
+
+<!-- 02 · START HERE -->
+<section class="page">
+  <div class="content">
+    <div class="page-head">
+      <div>
+        <p class="eyebrow">Start here</p>
+        <h1 style="margin-top:2.5mm;">The short version.</h1>
+        <p class="lede">Tea Stories are managed from a private staff area. You can write a story, save it as a draft, publish it, edit it later, or take it down — all from the same story desk.</p>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="url-box">
+        <div class="label">Staff login</div>
+        <a class="url" href="https://www.leafcoaching.com/admin/login">www.leafcoaching.com/<br>admin/login</a>
+        <div class="note">Sign in with the shared staff password.</div>
+      </div>
+      <div class="card soft">
+        <p class="eyebrow">Public journal</p>
+        <a class="journal-url" href="https://www.leafcoaching.com/tea-stories">www.leafcoaching.com/tea-stories</a>
+        <p style="margin-top:2mm; font-size:8.2pt;">This is where published stories appear. The newest story by story date is featured first.</p>
+      </div>
+    </div>
+
+    <div class="callout" style="margin-top:6mm;">
+      <span class="label">Read this before your first story</span>
+      <p><strong>Publishing is switched on by default for a new story.</strong> If the story is not ready to appear publicly, untick <strong>Published</strong> before you click <strong>Create story</strong>. The label changes to <strong>Save as a draft</strong>, and only signed-in staff will see it.</p>
+    </div>
+
+    <div style="margin-top:7mm;">
+      <div style="display:flex; align-items:baseline; justify-content:space-between; gap:6mm;">
+        <h2>The workflow at a glance</h2>
+        <span class="kicker">About 10–20 minutes</span>
+      </div>
+      <div class="number-row" style="margin-top:4mm;">
+        <div class="number-card"><div class="n">1</div><h3>Sign in</h3><p>Open the staff login and enter the shared password.</p></div>
+        <div class="number-card"><div class="n">2</div><h3>Start a story</h3><p>From the story desk, click <strong>New tea story</strong>.</p></div>
+        <div class="number-card"><div class="n">3</div><h3>Add a cover</h3><p>Choose a warm landscape photograph for the story.</p></div>
+      </div>
+      <div class="number-row" style="margin-top:3.5mm;">
+        <div class="number-card"><div class="n">4</div><h3>Write</h3><p>Add a title, optional introduction, and the story itself.</p></div>
+        <div class="number-card"><div class="n">5</div><h3>Choose status</h3><p>Keep <strong>Published</strong> ticked, or untick it for a draft.</p></div>
+        <div class="number-card"><div class="n">6</div><h3>Create &amp; check</h3><p>Click <strong>Create story</strong>, then <strong>View</strong> to check the live page.</p></div>
+      </div>
+    </div>
+
+    <div class="rule"></div>
+
+    <div class="grid-2">
+      <div>
+        <h3>Have these ready</h3>
+        <ul class="checks" style="margin-top:2.5mm;">
+          <li>The shared staff password.</li>
+          <li>A landscape cover image: JPG, PNG, WebP or AVIF, ideally at least 1200px wide.</li>
+          <li>A title and the story text — ideally saved somewhere safe as well.</li>
+          <li>An optional one- or two-sentence introduction.</li>
+        </ul>
+      </div>
+      <div class="card soft">
+        <h3>Good to know</h3>
+        <p style="margin-top:1.5mm;">There is no auto-save. Keep a copy of longer writing until you have clicked <strong>Create story</strong> or <strong>Save changes</strong>.</p>
+        <p style="margin-top:2mm;">A published story goes live as soon as you save. A draft is not visible to the public.</p>
+        <p style="margin-top:2mm;">The public address is built from the story’s <strong>web address</strong>, for example: <code>/tea-stories/the-tea-that-tasted-like-home</code>.</p>
+      </div>
+    </div>
+  </div>
+  <div class="footer"><span class="mark"><span class="leaf"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg></span>Leaf Coaching · Tea Stories SOP</span><span>02</span></div>
+</section>
+
+<!-- 03 · SIGN IN -->
+<section class="page">
+  <div class="content">
+    <div class="page-head">
+      <div class="step">1</div>
+      <div>
+        <p class="eyebrow">Step one</p>
+        <h1 style="margin-top:2.5mm;">Sign in to the staff room.</h1>
+        <p class="lede">The Tea Stories area is private. You need the shared staff password before you can write, edit or publish anything.</p>
+      </div>
+    </div>
+
+    <img class="shot" src="sop-assets/sop-01-login.png" alt="Leaf Coaching staff login page">
+
+    <div class="grid-2" style="margin-top:7mm;">
+      <div>
+        <ol class="steps">
+          <li>Open <strong>www.leafcoaching.com/admin/login</strong> in your browser.</li>
+          <li>Type the <strong>shared staff password</strong> into the password field.</li>
+          <li>Click <strong>Enter the staff room</strong>.</li>
+          <li>You should land on <strong>The story desk</strong> at <code>/admin/tea-stories</code>.</li>
+        </ol>
+      </div>
+      <div class="card soft">
+        <h3>Access notes</h3>
+        <p style="margin-top:1.5mm;">A sign-in lasts for <strong>8 hours</strong> in the same browser. After that you will be asked to sign in again.</p>
+        <p style="margin-top:2mm;">If the password is entered incorrectly <strong>6 times in 10 minutes</strong>, the form pauses further attempts. Wait a few minutes before trying again.</p>
+        <p style="margin-top:2mm;">Opening <code>/admin/tea-stories</code> while signed out simply redirects to the login page.</p>
+      </div>
+    </div>
+
+    <div class="callout forest" style="margin-top:6mm;">
+      <span class="label">If you see “Login is not configured yet”</span>
+      <p>The site is missing its staff-login settings. This is not something staff can fix from the website. Contact the web administrator and send them the exact message shown on screen.</p>
+    </div>
+  </div>
+  <div class="footer"><span class="mark"><span class="leaf"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg></span>Leaf Coaching · Tea Stories SOP</span><span>03</span></div>
+</section>
+
+<!-- 04 · STORY DESK -->
+<section class="page">
+  <div class="content">
+    <div class="page-head">
+      <div class="step">2</div>
+      <div>
+        <p class="eyebrow">Step two</p>
+        <h1 style="margin-top:2.5mm;">Open the story desk.</h1>
+        <p class="lede">After signing in you arrive at <strong>The story desk</strong>. This is the home of every Tea Story — published and draft.</p>
+      </div>
+    </div>
+
+    <img class="shot" src="sop-assets/sop-04-dashboard.png" alt="The Tea Stories story desk">
+    <p class="caption"><strong>Example shown.</strong> Your desk will list your own stories. The counts at the top update automatically.</p>
+
+    <div class="grid-3" style="margin-top:6mm;">
+      <div class="card">
+        <h3>Start a new story</h3>
+        <p style="margin-top:1.2mm;">Click the dark <strong>New tea story</strong> button on the right. The <strong>+ New story</strong> link in the top navigation does the same thing.</p>
+      </div>
+      <div class="card">
+        <h3>Read the badges</h3>
+        <p style="margin-top:1.2mm;"><strong>Published</strong> means the story is live. <strong>Draft</strong> means it is only visible to signed-in staff.</p>
+      </div>
+      <div class="card">
+        <h3>Use the row actions</h3>
+        <p style="margin-top:1.2mm;"><strong>View</strong> opens the public page (published stories only). <strong>Edit</strong> opens the editor. <strong>Delete</strong> removes the story permanently.</p>
+      </div>
+    </div>
+
+    <div class="callout forest" style="margin-top:6mm;">
+      <span class="label">Opening a story</span>
+      <p>Click <strong>New tea story</strong> to begin. If you are returning to an existing story, find it in the list and click <strong>Edit</strong>.</p>
+    </div>
+  </div>
+  <div class="footer"><span class="mark"><span class="leaf"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg></span>Leaf Coaching · Tea Stories SOP</span><span>04</span></div>
+</section>
+
+<!-- 05 · COVER -->
+<section class="page">
+  <div class="content">
+    <div class="page-head">
+      <div class="step">3</div>
+      <div>
+        <p class="eyebrow">Step three</p>
+        <h1 style="margin-top:2.5mm;">Add a cover image.</h1>
+        <p class="lede">The cover appears on the Tea Stories index and at the top of the story page. It sets the mood before a single word is read.</p>
+      </div>
+    </div>
+
+    <img class="shot" src="sop-assets/sop-03-editor-top.png" alt="New tea story editor with cover image and fields" style="width:138mm; margin:0 auto;">
+    <p class="caption" style="text-align:center;">The new story editor. The cover image area sits at the top left; publishing controls stay visible on the right.</p>
+
+    <div class="grid-2" style="margin-top:5mm;">
+      <div class="card soft">
+        <h3>Image rules</h3>
+        <ul class="checks" style="margin-top:2mm;">
+          <li><strong>Required for a new story.</strong></li>
+          <li>JPG, PNG, WebP or AVIF. The picker accepts files up to 20&nbsp;MB.</li>
+          <li>Large photos are resized in the browser; the server accepts a final upload up to 4&nbsp;MB.</li>
+          <li>Landscape, ideally at least 1200px wide. Keep the subject near the centre — the image is cropped to a wide shape.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Choose and check</h3>
+        <ol class="steps" style="margin-top:2mm;">
+          <li>Click <strong>Add a cover image</strong> and choose the file.</li>
+          <li>Check the preview. If it is wrong, choose <strong>Replace</strong> or <strong>Undo</strong>.</li>
+          <li>A warm, quiet photograph works best. Avoid busy graphics with lots of text.</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="rule"></div>
+
+    <div class="grid-2">
+      <div>
+        <h3>What makes a good cover?</h3>
+        <p style="margin-top:2mm; color:var(--ink-soft);">Choose something that feels like the story, not a generic stock image. A cup on a table, a window, a walk, a hand — ordinary moments usually work better than posed portraits. Keep the subject near the centre, away from the top and bottom edges.</p>
+      </div>
+      <div class="callout forest">
+        <span class="label">If the image will not upload</span>
+        <p>Export it again as a JPG around 1600px wide. The picker accepts large files, but the final upload must be under 4&nbsp;MB. If it still fails, send the image and the exact error to the web administrator.</p>
+      </div>
+    </div>
+  </div>
+  <div class="footer"><span class="mark"><span class="leaf"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg></span>Leaf Coaching · Tea Stories SOP</span><span>05</span></div>
+</section>
+
+<!-- 06 · DETAILS & WRITING -->
+<section class="page">
+  <div class="content">
+    <div class="page-head">
+      <div class="step">4</div>
+      <div>
+        <p class="eyebrow">Step four</p>
+        <h1 style="margin-top:2.5mm;">Write the story.</h1>
+        <p class="lede">Start with the title and web address, add an optional introduction, then write the story itself. There is no auto-save, so keep a copy of anything long until you have saved.</p>
+      </div>
+    </div>
+
+    <table>
+      <thead><tr><th style="width:24%;">Field</th><th style="width:22%;">Rule</th><th>What to do</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Title</strong></td><td>2–140 characters</td><td>Use the title you want readers to see. It also becomes the web address until you change it.</td></tr>
+        <tr><td><strong>Web address</strong></td><td>Auto-created</td><td>Made from the title in lower-case with hyphens. You may edit it, but <strong>old links will stop working</strong>. If the address is already used, the site adds <code>-2</code>.</td></tr>
+        <tr><td><strong>Short introduction</strong></td><td>Optional, up to 240 characters</td><td>One or two inviting sentences. If left blank, the site uses the opening of the story (about 180 characters).</td></tr>
+        <tr><td><strong>Story date</strong></td><td>Date picker</td><td>Shown on the story and used to order the index. The newest date is featured first.</td></tr>
+      </tbody>
+    </table>
+
+    <div class="rule"></div>
+
+    <div style="display:flex; align-items:baseline; justify-content:space-between; gap:6mm;">
+      <div>
+        <p class="eyebrow">The main text</p>
+        <h2 style="margin-top:1.5mm;">The Story box.</h2>
+      </div>
+      <span class="kicker">20–60,000 characters</span>
+    </div>
+
+    <div class="grid-2" style="margin-top:4mm;">
+      <div class="card soft">
+        <h3>Simple formatting</h3>
+        <table style="margin-top:2mm;">
+          <thead><tr><th style="width:42%;">Type this</th><th>To get</th></tr></thead>
+          <tbody>
+            <tr><td><code>## A heading</code></td><td>A section heading</td></tr>
+            <tr><td><code>&gt; A quote</code></td><td>A large italic quote</td></tr>
+            <tr><td><code>- First point</code></td><td>A bullet list (one per line)</td></tr>
+            <tr><td><code>**bold**</code></td><td><strong>Bold text</strong></td></tr>
+            <tr><td><code>*italic*</code></td><td><em>Italic text</em></td></tr>
+            <tr><td><code>---</code></td><td>A horizontal divider</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div>
+        <h3>How it behaves</h3>
+        <ul class="checks" style="margin-top:2.5mm;">
+          <li>A blank line starts a new paragraph.</li>
+          <li>Put a blank line before and after a heading, quote or list.</li>
+          <li>The editor does not create clickable links. Keep web addresses as plain text.</li>
+          <li>There is no built-in preview or formatting toolbar — read it through before saving.</li>
+        </ul>
+        <div class="callout forest" style="margin-top:4mm;">
+          <span class="label">Writing note</span>
+          <p>Write the way you would tell it to a friend across the table. Short paragraphs are easier to read on a phone.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout" style="margin-top:4mm;">
+      <span class="label">Before you move on</span>
+      <p>Read the introduction and the first two paragraphs aloud. If the opening does not invite someone in, rewrite it before publishing — that is the part most readers will see first on the index.</p>
+    </div>
+  </div>
+  <div class="footer"><span class="mark"><span class="leaf"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg></span>Leaf Coaching · Tea Stories SOP</span><span>06</span></div>
+</section>
+
+<!-- 07 · PUBLISHING -->
+<section class="page">
+  <div class="content">
+    <div class="page-head">
+      <div class="step">5</div>
+      <div>
+        <p class="eyebrow">Step five</p>
+        <h1 style="margin-top:2.5mm;">Choose Published or Draft.</h1>
+        <p class="lede">This is the visibility switch. It is the one setting to check twice before you save a new story.</p>
+      </div>
+    </div>
+
+    <div class="split-figure">
+      <div>
+        <div class="callout">
+          <span class="label">The one setting to get right</span>
+          <p><strong>A new story starts with Published ticked.</strong> If you are not ready to go live, untick it. The label changes to <strong>Save as a draft</strong>. Clicking <strong>Create story</strong> with Published ticked puts the story on the public website immediately.</p>
+        </div>
+        <div class="grid-2" style="margin-top:4mm;">
+          <div class="card">
+            <h3>Published</h3>
+            <p style="margin-top:1mm;">Visible on <code>/tea-stories</code> and its own page as soon as you save.</p>
+          </div>
+          <div class="card">
+            <h3>Save as a draft</h3>
+            <p style="margin-top:1mm;">Only signed-in staff see it on the story desk. Publish it later by ticking the box.</p>
+          </div>
+        </div>
+        <p class="small-note" style="margin-top:3mm;"><strong>Story date:</strong> choose the date readers should see. It also decides the order of the index — the newest date is featured first.</p>
+      </div>
+      <div>
+        <img class="shot" src="sop-assets/publishing-panel.png" alt="Publishing panel with Published ticked and Story date">
+        <p class="caption">The Publishing panel. A ticked box reads <strong>Published</strong>; an empty box reads <strong>Save as a draft</strong>.</p>
+      </div>
+    </div>
+
+    <div class="rule"></div>
+
+    <div class="grid-2">
+      <div class="card soft">
+        <h3>If you are publishing now</h3>
+        <ul class="checks" style="margin-top:2mm;">
+          <li>Cover image added and checked.</li>
+          <li>Title, introduction and date are correct.</li>
+          <li>Story read through for missing words or stray markers.</li>
+          <li><strong>Published</strong> is ticked.</li>
+          <li>You are ready for the link to be public.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>If you are saving a draft</h3>
+        <ul class="checks" style="margin-top:2mm;">
+          <li><strong>Published</strong> is unticked and the label reads <strong>Save as a draft</strong>.</li>
+          <li>You understand the public page will not exist yet.</li>
+          <li>You know to return to <strong>Edit</strong> to finish and publish.</li>
+          <li>You have kept a copy of any long text.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="callout forest" style="margin-top:6mm;">
+      <span class="label">A draft is not a private preview</span>
+      <p>A draft is hidden from the public, and there is no separate preview page. Check the text in the editor, then publish and use <strong>View</strong> when you are ready. Do not publish just to “see” it unless you are happy for it to be live.</p>
+    </div>
+  </div>
+  <div class="footer"><span class="mark"><span class="leaf"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg></span>Leaf Coaching · Tea Stories SOP</span><span>07</span></div>
+</section>
+
+<!-- 08 · SAVE & VERIFY -->
+<section class="page">
+  <div class="content">
+    <div class="page-head">
+      <div class="step">6</div>
+      <div>
+        <p class="eyebrow">Step six</p>
+        <h1 style="margin-top:2.5mm;">Create, then check the live page.</h1>
+        <p class="lede">Saving takes you back to the story desk. Always open the public page once before you share the link — it is the quickest way to catch a missing image or an unfinished sentence.</p>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <ol class="steps">
+        <li>Click <strong>Create story</strong> — either at the top right or in the Publishing panel.</li>
+        <li>Wait for the message that the image is uploading and saving. You will then be returned to <strong>The story desk</strong>.</li>
+        <li>Find the story in the list and check the green <strong>Published</strong> badge (or <strong>Draft</strong> if you unticked the box).</li>
+        <li>Click <strong>View</strong> to open the public story page. Read it on both desktop and phone if you can.</li>
+        <li>Open <strong>www.leafcoaching.com/tea-stories</strong> and confirm the story appears in the index.</li>
+      </ol>
+      <div>
+        <div class="card soft">
+          <h3>What good looks like</h3>
+          <ul class="checks" style="margin-top:2mm;">
+            <li>The cover image loads and is not stretched.</li>
+            <li>The title, introduction and date are correct.</li>
+            <li>Paragraphs, headings, quotes and lists render as intended.</li>
+            <li>The page ends cleanly with no stray markers such as <code>##</code> or <code>**</code>.</li>
+            <li>The public address matches the web address shown in the editor.</li>
+          </ul>
+        </div>
+        <div class="callout" style="margin-top:4mm;">
+          <span class="label">If you saved a draft</span>
+          <p>There will be no <strong>View</strong> link, because the public page does not exist yet. Open <strong>Edit</strong>, tick <strong>Published</strong>, and click <strong>Save changes</strong> when you are ready.</p>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top:6mm;">
+      <img class="shot" src="sop-assets/sop-07-story-page.png" alt="Published Tea Story page on the Leaf Coaching website" style="width:138mm; margin:0 auto;">
+      <p class="caption" style="text-align:center;"><strong>Example story page.</strong> Check the title, introduction, date, cover and body before sharing the link.</p>
+    </div>
+
+  </div>
+  <div class="footer"><span class="mark"><span class="leaf"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg></span>Leaf Coaching · Tea Stories SOP</span><span>08</span></div>
+</section>
+
+<!-- 09 · AFTER PUBLISHING -->
+<section class="page">
+  <div class="content">
+    <div class="page-head">
+      <div>
+        <p class="eyebrow">After publishing</p>
+        <h1 style="margin-top:2.5mm;">Edit, unpublish or delete.</h1>
+        <p class="lede">Everything starts from the story desk. Use <strong>Edit</strong> for changes, <strong>Published</strong> for visibility, and <strong>Delete</strong> only when you mean it.</p>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <p class="eyebrow">01 · Edit</p>
+        <h3 style="margin-top:1.5mm;">Change the story.</h3>
+        <ol class="steps" style="margin-top:2.5mm;">
+          <li>On the story desk, click <strong>Edit</strong> beside the story.</li>
+          <li>Change the title, introduction, body, date or cover. Leave the image alone to keep the current one.</li>
+          <li>Click <strong>Save changes</strong>. You return to the story desk.</li>
+          <li>Click <strong>View</strong> to check the public page again.</li>
+        </ol>
+        <p class="small-note" style="margin-top:1mm;">If the story is published, edits go live as soon as you save.</p>
+      </div>
+
+      <div class="card">
+        <p class="eyebrow">02 · Unpublish</p>
+        <h3 style="margin-top:1.5mm;">Take it down temporarily.</h3>
+        <ol class="steps" style="margin-top:2.5mm;">
+          <li>Click <strong>Edit</strong> beside the story.</li>
+          <li>In the Publishing panel, untick <strong>Published</strong>. The label changes to <strong>Save as a draft</strong>.</li>
+          <li>Click <strong>Save changes</strong>.</li>
+          <li>The story disappears from the public journal. Nothing is deleted.</li>
+        </ol>
+        <p class="small-note" style="margin-top:1mm;">The public link stops working while it is a draft. Republish by ticking <strong>Published</strong> and saving again.</p>
+      </div>
+
+      <div class="card">
+        <p class="eyebrow">03 · Delete</p>
+        <h3 style="margin-top:1.5mm;">Remove it permanently.</h3>
+        <ol class="steps" style="margin-top:2.5mm;">
+          <li>On the story desk, click <strong>Delete</strong> beside the story.</li>
+          <li>Read the confirmation. It names the story and warns that the story and its image will be removed.</li>
+          <li>Click <strong>OK</strong> to confirm, or <strong>Cancel</strong> to stop.</li>
+        </ol>
+        <p class="small-note" style="margin-top:1mm;"><strong>This cannot be undone.</strong> If you only need a break, unpublish instead.</p>
+      </div>
+
+      <div class="card soft">
+        <p class="eyebrow">04 · Web address</p>
+        <h3 style="margin-top:1.5mm;">Changing the link.</h3>
+        <p style="margin-top:2.5mm;">The <strong>Web address</strong> is the last part of the public URL. You can change it in the editor, but the old address does <strong>not</strong> redirect — any link already shared will stop working.</p>
+        <p style="margin-top:2.5mm;">If a story has already been shared, leave the web address alone unless you can update every place it was posted.</p>
+        <p style="margin-top:2.5mm;">If the address is already taken, the site adds <code>-2</code>, then <code>-3</code>, and so on.</p>
+      </div>
+    </div>
+
+    <div class="callout" style="margin-top:7mm;">
+      <span class="label">Choose the gentlest option that works</span>
+      <p><strong>Unpublish</strong> when a story needs a rest, a correction or a second look. <strong>Delete</strong> only when the story should never return. Deleting also removes its cover image.</p>
+    </div>
+
+  </div>
+  <div class="footer"><span class="mark"><span class="leaf"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg></span>Leaf Coaching · Tea Stories SOP</span><span>09</span></div>
+</section>
+
+<!-- 10 · TROUBLESHOOTING -->
+<section class="page">
+  <div class="content">
+    <div class="page-head">
+      <div>
+        <p class="eyebrow">Troubleshooting</p>
+        <h1 style="margin-top:2.5mm;">If something is not working.</h1>
+        <p class="lede">Most problems are one of these. Try the fix first; if the message mentions setup or storage, it needs the web administrator.</p>
+      </div>
+    </div>
+
+    <table>
+      <thead><tr><th style="width:33%;">What you see</th><th>What to do</th></tr></thead>
+      <tbody>
+        <tr><td><strong>You are sent back to the login page</strong></td><td>Your 8-hour session has ended. Sign in again.</td></tr>
+        <tr><td><strong>“That password is not correct”</strong></td><td>Check Caps Lock and retype the shared password. After <strong>6 wrong attempts in 10 minutes</strong>, wait a few minutes before trying again.</td></tr>
+        <tr><td><strong>“Too many attempts”</strong></td><td>Wait at least 10 minutes, then sign in with the correct password.</td></tr>
+        <tr><td><strong>“Login is not configured yet”</strong></td><td>The staff login settings are missing. Send the exact message to the web administrator.</td></tr>
+        <tr><td><strong>“Please add a cover image”</strong></td><td>A new story cannot be saved without one. Add a JPG, PNG, WebP or AVIF image.</td></tr>
+        <tr><td><strong>The image is rejected or upload fails</strong></td><td>Use JPG, PNG, WebP or AVIF. The picker accepts up to 20&nbsp;MB and resizes large files, but the final upload must be under 4&nbsp;MB. If needed, export a smaller JPG around 1600px wide and try again.</td></tr>
+        <tr><td><strong>Title or story length error</strong></td><td>The title must be 2–140 characters. The story must be at least 20 characters and no more than 60,000.</td></tr>
+        <tr><td><strong>A new story is not on the public journal</strong></td><td>Open <strong>Edit</strong> and check that <strong>Published</strong> is ticked, then save. Also confirm the story date and refresh the public page.</td></tr>
+        <tr><td><strong>A public link now shows “not found”</strong></td><td>The story may be a draft, deleted, or its <strong>Web address</strong> was changed. Republish it, or change the web address back to the old one and save.</td></tr>
+        <tr><td><strong>“Storage is not connected” or “storage is not configured”</strong></td><td>The site cannot save stories. This needs the web administrator — do not keep retrying.</td></tr>
+      </tbody>
+    </table>
+
+    <div class="rule"></div>
+
+    <div class="grid-2">
+      <div>
+        <h2 style="font-size:14pt;">Final check before you close the tab</h2>
+        <ul class="checks" style="margin-top:3mm;">
+          <li>Cover image loads and looks right.</li>
+          <li>Title, introduction and date are correct.</li>
+          <li>Story reads cleanly with no stray <code>##</code> or <code>**</code>.</li>
+          <li>Published or Draft is the status you intended.</li>
+          <li>Public page has been opened with <strong>View</strong>.</li>
+          <li>The link has been copied if it is being shared.</li>
+        </ul>
+      </div>
+      <div class="card dark">
+        <p class="eyebrow light">Need help?</p>
+        <h3 style="color:var(--sand); margin-top:2mm; font-size:16pt;">Send the web administrator a useful message.</h3>
+        <p style="margin-top:3mm;">Include the page you were on, the story title, what you expected, what happened, and a screenshot of any error. That is enough to investigate without guessing.</p>
+        <div style="margin-top:5mm; padding-top:4mm; border-top:0.3mm solid rgba(246,241,231,0.18);">
+          <p style="font-size:7.2pt; letter-spacing:0.16em; text-transform:uppercase; color:rgba(246,241,231,0.48);">Staff entrance</p>
+          <p style="margin-top:1mm;"><a href="https://www.leafcoaching.com/admin/login" style="font-family:var(--serif); font-size:12pt; color:var(--sand); text-decoration:none;">www.leafcoaching.com/admin/login</a></p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <div class="footer"><span class="mark"><span class="leaf"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg></span>Leaf Coaching · Tea Stories SOP</span><span>10</span></div>
+</section>
+
+</body>
+</html>
