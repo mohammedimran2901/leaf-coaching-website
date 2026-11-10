@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { ArrowRight, Download, FileText, Leaf } from 'lucide-react'
+import { ArrowRight, Download, FileText } from 'lucide-react'
 import WorkbookCover from './WorkbookCover'
 import { formatGBP, getProduct } from '@/lib/products'
 
@@ -32,11 +32,20 @@ export default function BooksSection() {
             >
               Explore books &amp; workbooks <ArrowRight className="h-4 w-4" />
             </Link>
-            {workbook.preview && peace.preview && (
+            {book.preview && workbook.preview && peace.preview && (
               <p className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-ink-muted">
                 <span className="inline-flex items-center gap-1.5">
                   <FileText className="h-3.5 w-3.5" /> Free first chapters:
                 </span>
+                <a
+                  href={book.preview.file}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-medium text-forest underline decoration-forest/30 underline-offset-4 hover:decoration-forest"
+                >
+                  Be Melting Snow
+                </a>
+                <span aria-hidden="true">·</span>
                 <a
                   href={workbook.preview.file}
                   target="_blank"
@@ -61,14 +70,28 @@ export default function BooksSection() {
           <div className="space-y-4 md:col-span-7">
             <Link
               href={`/pay?product=${book.id}`}
-              className="group flex flex-col gap-5 rounded-[1.75rem] border border-ink/10 bg-white/60 p-6 transition-all duration-500 ease-soft hover:-translate-y-1 hover:border-forest/30 hover:bg-white hover:shadow-[0_24px_60px_-40px_rgba(20,40,25,0.6)] sm:flex-row sm:items-center md:p-7"
+              className="group flex flex-col gap-5 rounded-[1.75rem] border border-ink/10 bg-gradient-to-br from-[#F7F2E5] via-white/80 to-[#E7ECE0] p-6 transition-all duration-500 ease-soft hover:-translate-y-1 hover:border-forest/30 hover:shadow-[0_24px_60px_-40px_rgba(20,40,25,0.6)] sm:flex-row sm:items-center md:p-7"
             >
-              <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-forest/10 text-forest">
-                <Leaf className="h-6 w-6" />
-              </span>
+              {book.image && (
+                <WorkbookCover
+                  image={book.image}
+                  className="h-28 w-[5.25rem]"
+                  sizes="84px"
+                />
+              )}
               <span className="min-w-0 flex-1">
-                <span className="text-[10px] uppercase tracking-widest text-clay">
-                  The book · paperback
+                <span className="flex flex-wrap items-center gap-2">
+                  <span className="text-[10px] uppercase tracking-widest text-clay">
+                    The book · digital edition
+                  </span>
+                  {book.saleLabel && (
+                    <span className="rounded-full bg-clay px-2.5 py-1 text-[9px] uppercase tracking-widest text-sand">
+                      {book.saleLabel}
+                    </span>
+                  )}
+                  <span className="inline-flex items-center gap-1 rounded-full bg-forest/10 px-2.5 py-1 text-[9px] uppercase tracking-widest text-forest/70">
+                    <Download className="h-3 w-3" /> Instant PDF
+                  </span>
                 </span>
                 <span className="mt-1 block font-serif text-2xl leading-snug text-ink">
                   {book.name}
@@ -81,6 +104,11 @@ export default function BooksSection() {
               <span className="flex shrink-0 items-center gap-4 sm:flex-col sm:items-end sm:gap-2">
                 <span className="font-serif text-2xl text-forest">
                   {formatGBP(book.price)}
+                  {book.compareAtPrice && (
+                    <span className="ml-2 font-sans text-xs font-normal text-ink-muted line-through">
+                      {formatGBP(book.compareAtPrice)}
+                    </span>
+                  )}
                 </span>
                 <span className="flex h-9 w-9 items-center justify-center rounded-full border border-forest/20 text-forest transition-all duration-500 group-hover:border-clay group-hover:bg-clay group-hover:text-sand">
                   <ArrowRight className="h-4 w-4" />

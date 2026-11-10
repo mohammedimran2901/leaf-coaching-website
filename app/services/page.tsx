@@ -155,23 +155,38 @@ export default function ServicesPage() {
                   Words to take home
                 </h2>
                 <p className="mt-2 max-w-xl text-sm leading-relaxed text-ink-soft">
-                  {book.name} for perspective — plus two digital workbooks:{' '}
+                  {book.name} for perspective, plus two digital workbooks:{' '}
                   {workbook.name}, a 30-page relational patterns workbook, and{' '}
                   {peace.name}, a six-week programme for peace in ordinary life.
-                  Each arrives as an instant PDF download.
+                  All three arrive as instant PDF downloads.
                 </p>
               </div>
             </div>
             <div className="flex flex-col gap-3 md:col-span-5">
               <Link
-                href={`/pay?product=${workbook.id}`}
+                href={`/pay?product=${book.id}`}
                 className="btn-primary w-full justify-between"
+              >
+                <span className="flex items-center gap-2">
+                  <BookOpen className="h-4 w-4" /> The book ·{' '}
+                  {formatGBP(book.price)}
+                  {book.compareAtPrice && (
+                    <span className="text-xs font-normal text-sand/60 line-through">
+                      was {formatGBP(book.compareAtPrice)}
+                    </span>
+                  )}
+                </span>
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+              <Link
+                href={`/pay?product=${workbook.id}`}
+                className="inline-flex w-full items-center justify-between gap-2 rounded-full border border-forest/25 bg-white/55 px-5 py-3 text-sm font-medium text-forest transition-colors hover:border-forest"
               >
                 <span className="flex items-center gap-2">
                   <Download className="h-4 w-4" /> Workbook ·{' '}
                   {formatGBP(workbook.price)}
                   {workbook.compareAtPrice && (
-                    <span className="text-xs font-normal text-sand/60 line-through">
+                    <span className="text-xs font-normal text-ink-muted line-through">
                       was {formatGBP(workbook.compareAtPrice)}
                     </span>
                   )}

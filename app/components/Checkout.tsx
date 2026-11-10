@@ -771,7 +771,7 @@ export default function Checkout({
               </p>
             ) : product.digital ? (
               <p>
-                This is a digital workbook. Your PDF download link appears on the
+                This is a digital download. Your PDF download link appears on the
                 confirmation screen straight after payment and stays valid for
                 seven days.
               </p>

@@ -6,7 +6,6 @@ import {
   Check,
   Download,
   FileText,
-  Leaf,
   ShieldCheck,
 } from 'lucide-react'
 import Header from '../components/Header'
@@ -17,7 +16,7 @@ import { formatGBP, getProduct } from '@/lib/products'
 export const metadata: Metadata = {
   title: 'Books & workbooks | Leaf Coaching',
   description:
-    'Be Melting Snow, the book by Aamna Khokhar, plus two instant PDF workbooks: Beyond the Role — a 30-page relational patterns workbook (launch offer £3.99, usually £12.99) and How to Make Peace with Your Parents — a 34-page six-week programme (launch offer £4.99, usually £19.99). Read the first chapter of either workbook free.',
+    'Be Melting Snow by Aamna Khokhar — now £4.99 (usually £8.99) as an instant PDF — plus two digital workbooks: Beyond the Role, a 30-page relational patterns workbook (launch offer £3.99, usually £12.99), and How to Make Peace with Your Parents, a 34-page six-week programme (launch offer £4.99, usually £19.99). Read chapter one of any title free.',
 }
 
 const inside = [
@@ -61,8 +60,8 @@ export default function BooksPage() {
                 <p className="mt-3 text-sm leading-relaxed text-ink-soft">
                   Your download arrives as a PDF the moment your payment clears.
                   No waiting, no postage — just a link you can save and return
-                  to. Prefer to try first? Read the first chapter of either
-                  workbook free below.
+                  to. Prefer to try first? Read chapter one of any title free
+                  below.
                 </p>
               </div>
             </div>
@@ -74,32 +73,30 @@ export default function BooksPage() {
         <div className="container-site">
           <div className="grid gap-6 lg:grid-cols-2">
             {book && (
-              <article className="flex flex-col rounded-[2rem] border border-ink/10 bg-sand p-7 md:p-9">
+              <article className="flex flex-col rounded-[2rem] border border-ink/10 bg-gradient-to-br from-[#F6F1E4] via-sand to-[#E2E9DD] p-7 md:p-9">
                 <div className="flex flex-col gap-7 sm:flex-row">
-                  <div className="relative flex aspect-[3/4] w-full max-w-[11.5rem] shrink-0 flex-col justify-between overflow-hidden rounded-l-sm rounded-r-xl bg-forest p-5 text-sand shadow-[0_30px_60px_-38px_rgba(20,40,25,0.9)] sm:self-start">
-                    <span className="absolute inset-y-0 left-0 w-2.5 bg-black/20" />
-                    <p className="flex items-center gap-1.5 text-[9px] uppercase tracking-widest2 text-sand/70">
-                      <Leaf className="h-3 w-3" /> Leaf Coaching
-                    </p>
-                    <div>
-                      <p className="text-[9px] uppercase tracking-widest text-clay-light">
-                        Aamna Khokhar
-                      </p>
-                      <p className="mt-2 font-serif text-[2rem] leading-[0.95]">
-                        Be Melting
-                        <br />
-                        <em className="italic text-clay-light">Snow</em>
-                      </p>
-                    </div>
-                    <p className="text-[9px] uppercase tracking-widest text-sand/60">
-                      Paperback
-                    </p>
-                  </div>
+                  {book.image && (
+                    <WorkbookCover
+                      image={book.image}
+                      className="aspect-[3/4] w-full max-w-[12rem] sm:self-start"
+                      sizes="(max-width: 640px) 70vw, 192px"
+                    />
+                  )}
 
                   <div className="flex flex-1 flex-col">
-                    <p className="text-[11px] uppercase tracking-widest text-clay">
-                      The book
-                    </p>
+                    <div className="flex flex-wrap items-center gap-2">
+                      <p className="text-[11px] uppercase tracking-widest text-clay">
+                        The book
+                      </p>
+                      {book.saleLabel && (
+                        <span className="rounded-full bg-clay px-2.5 py-1 text-[9px] uppercase tracking-widest text-sand">
+                          {book.saleLabel}
+                        </span>
+                      )}
+                      <span className="rounded-full bg-forest px-2.5 py-1 text-[9px] uppercase tracking-widest text-sand">
+                        Instant download
+                      </span>
+                    </div>
                     <h2 className="mt-2 font-serif text-3xl leading-tight text-ink">
                       {book.name}
                     </h2>
@@ -116,7 +113,11 @@ export default function BooksPage() {
                       </li>
                       <li className="flex gap-2">
                         <Check className="mt-0.5 h-4 w-4 shrink-0 text-forest" />
-                        Paperback, collection or delivery arranged after payment
+                        Aamna’s original illustrations and reader notes
+                      </li>
+                      <li className="flex gap-2">
+                        <Check className="mt-0.5 h-4 w-4 shrink-0 text-forest" />
+                        82-page PDF, yours to download and keep
                       </li>
                     </ul>
                   </div>
@@ -127,16 +128,41 @@ export default function BooksPage() {
                     <p className="text-[11px] uppercase tracking-widest text-ink-muted">
                       {book.meta}
                     </p>
-                    <p className="mt-1 font-serif text-4xl text-forest">
-                      {formatGBP(book.price)}
+                    <p className="mt-1 flex flex-wrap items-baseline gap-x-2 gap-y-1">
+                      <span className="font-serif text-4xl text-forest">
+                        {formatGBP(book.price)}
+                      </span>
+                      {book.compareAtPrice && (
+                        <span className="font-sans text-base text-ink-muted line-through">
+                          {formatGBP(book.compareAtPrice)}
+                        </span>
+                      )}
                     </p>
                   </div>
-                  <Link
-                    href={`/pay?product=${book.id}`}
-                    className="btn-primary"
-                  >
-                    Buy the book <ArrowRight className="h-4 w-4" />
-                  </Link>
+                  <div className="flex w-full flex-wrap items-center gap-3 sm:w-auto">
+                    {book.preview && (
+                      <a
+                        href={book.preview.file}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-forest/25 px-5 py-3.5 text-sm font-medium tracking-wide text-forest transition-colors duration-500 hover:border-forest hover:bg-forest/5 sm:w-auto sm:px-6"
+                      >
+                        <FileText className="h-4 w-4" />
+                        <span className="whitespace-nowrap">
+                          {book.preview.label}
+                        </span>
+                        <span className="whitespace-nowrap text-ink-muted">
+                          · {book.preview.pages} pages
+                        </span>
+                      </a>
+                    )}
+                    <Link
+                      href={`/pay?product=${book.id}`}
+                      className="btn-primary w-full sm:w-auto"
+                    >
+                      <Download className="h-4 w-4" /> Buy the digital edition
+                    </Link>
+                  </div>
                 </div>
               </article>
             )}

@@ -2,7 +2,7 @@
 
 A Next.js 14 (App Router) site for Leaf Coaching CIC: a warm, editorial
 homepage, service pages, and a PayPal checkout for sessions, bundles,
-workshops, membership, the *Be Melting Snow* book and two digital workbooks:
+workshops, membership, and three digital editions: *Be Melting Snow*,
 *Beyond the Role* and *How to Make Peace with Your Parents*.
 
 ## Quick start
@@ -29,7 +29,7 @@ npm run lint       # next lint
 | `/` | Homepage — homage hero, marquee, story timeline, six pillars, impact, payment teaser, testimonials, booking CTA |
 | `/about` | Story, values and approach |
 | `/services` | Services and catalogue prices with direct **Pay & book** links |
-| `/books` | Books and workbooks, including both digital workbooks and how delivery works |
+| `/books` | Books and workbooks, including all three digital editions and how delivery works |
 | `/pay` | Two-step checkout (details → PayPal) with a sticky order summary |
 | `/contact` | Contact form |
 
@@ -75,9 +75,10 @@ same order through the REST API and redirects to PayPal's hosted checkout; the
 
 ### Digital downloads
 
-The workbook PDFs live under `private/downloads/` — deliberately outside
+The paid PDFs live under `private/downloads/` — deliberately outside
 `public/`, so they cannot be fetched by guessing a URL:
 
+- `be-melting-snow.pdf`
 - `beyond-the-role.pdf`
 - `how-to-make-peace-with-your-parents.pdf`
 
@@ -103,8 +104,10 @@ of it invalidates the signature. The route streams the PDF with
 
 ### Free chapter previews
 
-The first chapter of each workbook is also available as a free, public sample:
+The first chapter of each title is also available as a free, public sample:
 
+- `public/downloads/be-melting-snow-chapter-1-preview.pdf` — cover, title,
+  copyright, contents and Chapter One (11 pages)
 - `public/downloads/beyond-the-role-chapter-1-preview.pdf` — cover, contents
   and Part I (4 pages)
 - `public/downloads/how-to-make-peace-with-your-parents-chapter-1-preview.pdf`
@@ -112,14 +115,15 @@ The first chapter of each workbook is also available as a free, public sample:
 
 These files are intentionally public and are linked from `/books` through each
 product's `preview` field in `lib/products.ts`. Unlike the paid PDFs, they live
-under `public/`. If a workbook is revised, regenerate both the paid file and its
+under `public/`. If a title is revised, regenerate both the paid file and its
 preview so the sample stays in step.
 
-### Workbook cover images
+### Cover images
 
-The shop covers are exported from page 1 of each paid workbook PDF and saved as
+The shop covers are exported from page 1 of each paid PDF and saved as
 1200 × 1600 WebP files under `public/images/`:
 
+- `be-melting-snow-cover.webp`
 - `beyond-the-role-cover.webp`
 - `how-to-make-peace-with-your-parents-cover.webp`
 

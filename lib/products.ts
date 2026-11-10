@@ -131,14 +131,32 @@ export const PRODUCTS: Product[] = [
   {
     id: 'be-melting-snow',
     name: 'Be Melting Snow — the book',
-    price: 8.99,
+    price: 4.99,
+    compareAtPrice: 8.99,
+    saleLabel: 'Sale',
     category: 'books',
     summary:
-      'Aamna’s eleven-chapter companion for forgiveness, new beginnings and finding yourself again.',
+      'Aamna’s eleven-chapter companion for forgiveness, new beginnings and finding yourself again — now £4.99 (usually £8.99).',
     description:
-      'Inspired by Rumi and rooted in Aamna’s coaching practice. We will be in touch after checkout to arrange collection or delivery.',
-    meta: 'Paperback · 11 chapters',
-    physical: true,
+      'Inspired by Rumi and rooted in Aamna’s coaching practice, Be Melting Snow is an eleven-chapter companion for forgiveness, new beginnings and finding yourself again. This digital edition includes the complete text, Aamna’s original illustrations and reader notes. Your PDF download link appears immediately after payment and stays valid for seven days.',
+    meta: 'Digital PDF · 82 pages · instant download',
+    badge: 'Instant download',
+    digital: true,
+    download: {
+      file: 'private/downloads/be-melting-snow.pdf',
+      filename: 'Be-Melting-Snow-Digital-Edition.pdf',
+    },
+    preview: {
+      file: '/downloads/be-melting-snow-chapter-1-preview.pdf',
+      label: 'Read chapter one free',
+      pages: 11,
+    },
+    image: {
+      src: '/images/be-melting-snow-cover.webp',
+      alt: 'Be Melting Snow book cover — a winter river at sunrise with snowdrops and pine trees',
+      width: 1200,
+      height: 1600,
+    },
   },
   {
     id: 'beyond-the-role',
@@ -220,7 +238,7 @@ export const PRODUCT_GROUPS: Array<{
   {
     id: 'books',
     label: 'Books & workbooks',
-    blurb: 'Paperback and instant PDF downloads',
+    blurb: 'Digital books and instant PDF downloads',
   },
 ]
 
