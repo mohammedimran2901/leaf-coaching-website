@@ -1,6 +1,8 @@
 import Link from 'next/link'
 import { ArrowRight, BookOpen, Check, Download, Heart } from 'lucide-react'
 import FAQ from '../components/FAQ'
+import Header from '../components/Header'
+import Footer from '../components/Footer'
 import { formatGBP, getProduct } from '@/lib/products'
 
 const services = [
@@ -58,6 +60,7 @@ function priceFor(productId: string) {
 export default function ServicesPage() {
   return (
     <main className="pt-36 md:pt-44">
+      <Header />
       <section className="container-site pb-16 md:pb-20">
         <p className="eyebrow mb-5">Our services</p>
         <h1 className="text-5xl md:text-7xl font-serif text-ink leading-[1.05] max-w-3xl">
@@ -221,6 +224,7 @@ export default function ServicesPage() {
       </section>
 
       <FAQ />
+      <Footer />
     </main>
   )
 }

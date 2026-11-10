@@ -1,6 +1,8 @@
 'use client'
 import { useState } from 'react'
 import { ArrowRight, Mail, Instagram } from 'lucide-react'
+import Header from '../components/Header'
+import Footer from '../components/Footer'
 
 const inputClasses =
   'w-full px-5 py-3.5 bg-white/70 border border-ink/15 rounded-2xl focus:ring-2 focus:ring-clay/50 focus:border-clay outline-none transition-all text-ink placeholder:text-ink-muted'
@@ -37,6 +39,7 @@ export default function ContactPage() {
 
   return (
     <main className="pt-36 md:pt-44">
+      <Header />
       <section className="container-site pb-14 md:pb-16">
         <p className="eyebrow mb-5">Contact</p>
         <h1 className="text-5xl md:text-7xl font-serif text-ink leading-[1.05] max-w-3xl">
@@ -133,6 +136,8 @@ export default function ContactPage() {
           </div>
         </div>
       </section>
+
+      <Footer />
     </main>
   )
 }

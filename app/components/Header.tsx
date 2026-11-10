@@ -5,10 +5,11 @@ import { motion, AnimatePresence, useScroll, useSpring } from 'framer-motion'
 import { Menu, X, ArrowUpRight } from 'lucide-react'
 
 const navLinks = [
+  { name: 'Home', href: '/' },
   { name: 'About', href: '/about' },
   { name: 'Services', href: '/services' },
+  { name: 'Tea Stories', href: '/tea-stories' },
   { name: 'Books', href: '/books' },
-  { name: 'Stories', href: '/tea-stories' },
   { name: 'Pay & book', href: '/pay' },
   { name: 'Contact', href: '/contact' },
 ]
@@ -54,17 +55,20 @@ export default function Header() {
         </Link>
 
         {/* Desktop nav */}
-        <nav className="hidden md:flex items-center gap-5 xl:gap-7">
+        <nav className="hidden lg:flex items-center gap-3 xl:gap-5">
           {navLinks.map((link) => (
             <Link
               key={link.name}
               href={link.href}
-              className="link-underline text-sm font-medium text-ink-soft hover:text-ink transition-colors"
+              className="link-underline whitespace-nowrap text-[13px] font-medium text-ink-soft transition-colors hover:text-ink xl:text-sm"
             >
               {link.name}
             </Link>
           ))}
-          <Link href="/contact" className="btn-primary !px-5 !py-2.5">
+          <Link
+            href="/contact"
+            className="btn-primary !px-4 !py-2.5 whitespace-nowrap text-xs xl:text-sm"
+          >
             Book a call <ArrowUpRight className="w-4 h-4" />
           </Link>
         </nav>
@@ -72,7 +76,7 @@ export default function Header() {
         {/* Mobile toggle */}
         <button
           aria-label="Toggle menu"
-          className="md:hidden text-ink p-1"
+          className="lg:hidden text-ink p-1"
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
         >
           {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -87,7 +91,7 @@ export default function Header() {
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-            className="md:hidden bg-sand/95 backdrop-blur-md border-b hairline overflow-hidden absolute w-full"
+            className="lg:hidden bg-sand/95 backdrop-blur-md border-b hairline overflow-hidden absolute w-full"
           >
             <div className="container-site py-6 flex flex-col gap-5">
               {navLinks.map((link) => (

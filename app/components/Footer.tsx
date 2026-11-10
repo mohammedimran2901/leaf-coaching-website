@@ -26,6 +26,7 @@ export default function Footer() {
               Explore
             </h4>
             <ul className="space-y-3 text-[15px]">
+              <li><Link href="/" className="text-sand/75 hover:text-sand transition-colors">Home</Link></li>
               <li><Link href="/about" className="text-sand/75 hover:text-sand transition-colors">About</Link></li>
               <li><Link href="/services" className="text-sand/75 hover:text-sand transition-colors">Services</Link></li>
               <li><Link href="/books" className="text-sand/75 hover:text-sand transition-colors">Books &amp; workbooks</Link></li>

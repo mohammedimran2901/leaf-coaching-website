@@ -52,6 +52,16 @@ export default async function TeaStoriesPage() {
         <div className="container-site relative">
           <div className="grid gap-10 md:grid-cols-12 md:items-end">
             <div className="md:col-span-8">
+              <nav
+                aria-label="Breadcrumb"
+                className="mb-6 flex flex-wrap items-center gap-2 text-sm text-ink-muted"
+              >
+                <Link href="/" className="transition-colors hover:text-forest">
+                  Home
+                </Link>
+                <span aria-hidden="true" className="text-ink/25">/</span>
+                <span className="text-ink">Tea Stories</span>
+              </nav>
               <p className="eyebrow mb-5">Tea Stories</p>
               <h1 className="text-balance font-serif text-5xl leading-[0.98] text-ink md:text-7xl">
                 Stories worth

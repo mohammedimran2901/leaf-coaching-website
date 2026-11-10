@@ -2,6 +2,8 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { ArrowLeft, Lock, ShieldCheck } from 'lucide-react'
 import Checkout from '../components/Checkout'
+import Header from '../components/Header'
+import Footer from '../components/Footer'
 
 export const metadata: Metadata = {
   title: 'Pay & book | Leaf Coaching',
@@ -20,6 +22,7 @@ export default function PayPage({
 
   return (
     <main className="pt-32 md:pt-40">
+      <Header />
       <section className="container-site pb-12 md:pb-16">
         <Link
           href="/services"
@@ -61,6 +64,8 @@ export default function PayPage({
       <section className="container-site pb-24 md:pb-32">
         <Checkout initialProductId={requested ?? 'single-session'} />
       </section>
+
+      <Footer />
     </main>
   )
 }

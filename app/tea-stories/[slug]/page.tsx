@@ -67,12 +67,18 @@ export default async function TeaStoryPage({ params }: StoryPageProps) {
 
       <article className="pb-20 pt-32 md:pb-28 md:pt-40">
         <div className="container-site">
-          <Link
-            href="/tea-stories"
-            className="inline-flex items-center gap-2 text-sm text-ink-muted transition-colors hover:text-forest"
-          >
-            <ArrowLeft className="h-4 w-4" /> All tea stories
-          </Link>
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-ink-muted">
+            <Link href="/" className="transition-colors hover:text-forest">
+              Home
+            </Link>
+            <span aria-hidden="true" className="text-ink/25">/</span>
+            <Link
+              href="/tea-stories"
+              className="inline-flex items-center gap-2 transition-colors hover:text-forest"
+            >
+              <ArrowLeft className="h-4 w-4" /> All tea stories
+            </Link>
+          </div>
 
           <header className="mx-auto mt-10 max-w-3xl text-center md:mt-14">
             <p className="flex flex-wrap items-center justify-center gap-x-3 gap-y-2 text-xs uppercase tracking-widest text-ink-muted">

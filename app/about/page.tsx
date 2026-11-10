@@ -1,6 +1,8 @@
 import Link from 'next/link'
 import { ArrowRight } from 'lucide-react'
 import CountUp from '../components/CountUp'
+import Header from '../components/Header'
+import Footer from '../components/Footer'
 
 const values = [
   {
@@ -23,6 +25,7 @@ const values = [
 export default function AboutPage() {
   return (
     <main className="pt-36 md:pt-44">
+      <Header />
       <section className="container-site pb-16 md:pb-24">
         <p className="eyebrow mb-5">About us</p>
         <h1 className="text-5xl md:text-7xl font-serif text-ink leading-[1.05] max-w-3xl">
@@ -81,6 +84,8 @@ export default function AboutPage() {
           </Link>
         </div>
       </section>
+
+      <Footer />
     </main>
   )
 }
