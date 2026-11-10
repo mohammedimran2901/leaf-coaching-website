@@ -15,6 +15,7 @@ export type ProductId =
   | 'dinner-club-month'
   | 'be-melting-snow'
   | 'beyond-the-role'
+  | 'how-to-make-peace-with-your-parents'
 
 export interface DigitalDownload {
   /** Path relative to the project root. Never place paid files in /public. */
@@ -125,15 +126,34 @@ export const PRODUCTS: Product[] = [
     saleLabel: 'Launch offer',
     category: 'books',
     summary:
-      'A 29-page relational patterns workbook for noticing what you reach for, understanding why, and recovering choice — now £3.99 (usually £12.99).',
+      'A 30-page relational patterns workbook for noticing what you reach for, understanding why, and recovering choice — now £3.99 (usually £12.99).',
     description:
-      'A reflective, evidence-informed workbook by Aamna Khokhar. Five parts, practical prompts and space to write. Your PDF download link appears immediately after payment and stays valid for seven days.',
-    meta: 'Digital PDF · 29 pages · instant download',
+      'A reflective, evidence-informed workbook by Aamna Khokhar. Thirty pages across five parts: why patterns develop, the Observer position and the Drama Triangle, the five adaptive patterns, mapping your relational system, and growing beyond the role. Includes a four-week practice, quick observer sheet, research notes and space to write. Your PDF download link appears immediately after payment and stays valid for seven days.',
+    meta: 'Digital PDF · 30 pages · instant download',
     badge: 'Instant download',
     digital: true,
     download: {
       file: 'private/downloads/beyond-the-role.pdf',
       filename: 'Beyond-the-Role-Relational-Patterns-Workbook.pdf',
+    },
+  },
+  {
+    id: 'how-to-make-peace-with-your-parents',
+    name: 'How to Make Peace with Your Parents — the workbook',
+    price: 4.99,
+    compareAtPrice: 19.99,
+    saleLabel: 'Launch offer',
+    category: 'books',
+    summary:
+      'A six-week self-guided programme for living alongside family with greater honesty, dignity, compassion and choice — now £4.99 (usually £19.99).',
+    description:
+      'A reflective, faith-sensitive workbook by Aamna Khokhar for anyone who loves their parents and still finds the relationship complicated. Six weekly chapters move from honest noticing and understanding them without excusing them, to reclaiming yourself, boundaries without abandonment, finding peace in the everyday, and choosing what to carry forward. Each week includes teaching, reflection prompts, a body-based practice, an Islamic reflection and an invitation to bring the work into ordinary life. Includes further reading, support information and space to write. Your PDF download link appears immediately after payment and stays valid for seven days.',
+    meta: 'Digital PDF · 34 pages · instant download',
+    badge: 'Instant download',
+    digital: true,
+    download: {
+      file: 'private/downloads/how-to-make-peace-with-your-parents.pdf',
+      filename: 'How-to-Make-Peace-with-Your-Parents-Workbook.pdf',
     },
   },
 ]

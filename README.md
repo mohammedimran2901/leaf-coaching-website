@@ -2,8 +2,8 @@
 
 A Next.js 14 (App Router) site for Leaf Coaching CIC: a warm, editorial
 homepage, service pages, and a PayPal checkout for sessions, bundles,
-workshops, membership, the *Be Melting Snow* book and the *Beyond the Role*
-digital workbook.
+workshops, membership, the *Be Melting Snow* book and two digital workbooks:
+*Beyond the Role* and *How to Make Peace with Your Parents*.
 
 ## Quick start
 
@@ -29,7 +29,7 @@ npm run lint       # next lint
 | `/` | Homepage — homage hero, marquee, story timeline, six pillars, impact, payment teaser, testimonials, booking CTA |
 | `/about` | Story, values and approach |
 | `/services` | Services and catalogue prices with direct **Pay & book** links |
-| `/books` | Books and workbooks, including the digital workbook and how delivery works |
+| `/books` | Books and workbooks, including both digital workbooks and how delivery works |
 | `/pay` | Two-step checkout (details → PayPal) with a sticky order summary |
 | `/contact` | Contact form |
 
@@ -43,6 +43,7 @@ Deep links into checkout use `?product=`:
 /pay?product=dinner-club-month
 /pay?product=be-melting-snow
 /pay?product=beyond-the-role
+/pay?product=how-to-make-peace-with-your-parents
 ```
 
 ## Payments
@@ -74,9 +75,14 @@ same order through the REST API and redirects to PayPal's hosted checkout; the
 
 ### Digital downloads
 
-The workbook PDF lives at `private/downloads/beyond-the-role.pdf` — deliberately
-outside `public/`, so it cannot be fetched by guessing a URL. After a verified
-capture, `capture-order` issues an HMAC-signed link valid for **7 days**:
+The workbook PDFs live under `private/downloads/` — deliberately outside
+`public/`, so they cannot be fetched by guessing a URL:
+
+- `beyond-the-role.pdf`
+- `how-to-make-peace-with-your-parents.pdf`
+
+After a verified capture, `capture-order` issues an HMAC-signed link valid for
+**7 days**:
 
 ```
 /api/download?token=<signed-token>

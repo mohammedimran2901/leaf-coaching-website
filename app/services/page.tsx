@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { ArrowRight, BookOpen, Check, Download } from 'lucide-react'
+import { ArrowRight, BookOpen, Check, Download, Heart } from 'lucide-react'
 import FAQ from '../components/FAQ'
 import { formatGBP, getProduct } from '@/lib/products'
 
@@ -48,6 +48,7 @@ const services = [
 
 const book = getProduct('be-melting-snow')
 const workbook = getProduct('beyond-the-role')
+const peace = getProduct('how-to-make-peace-with-your-parents')
 
 function priceFor(productId: string) {
   const product = getProduct(productId)
@@ -140,7 +141,7 @@ export default function ServicesPage() {
           ))}
         </div>
 
-        {book && workbook && (
+        {book && workbook && peace && (
           <div className="mt-6 grid gap-6 rounded-3xl border border-clay/25 bg-clay-pale/60 p-8 md:grid-cols-12 md:items-center md:p-10">
             <div className="flex items-start gap-4 md:col-span-7">
               <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-forest text-sand">
@@ -154,11 +155,10 @@ export default function ServicesPage() {
                   Words to take home
                 </h2>
                 <p className="mt-2 max-w-xl text-sm leading-relaxed text-ink-soft">
-                  {book.name} for perspective — and {workbook.name}, a 29-page
-                  relational patterns workbook, for the patterns underneath.
-                  {workbook.digital
-                    ? ' The workbook arrives as an instant PDF download.'
-                    : ''}
+                  {book.name} for perspective — plus two digital workbooks:{' '}
+                  {workbook.name}, a 30-page relational patterns workbook, and{' '}
+                  {peace.name}, a six-week programme for peace in ordinary life.
+                  Each arrives as an instant PDF download.
                 </p>
               </div>
             </div>
@@ -173,6 +173,21 @@ export default function ServicesPage() {
                   {workbook.compareAtPrice && (
                     <span className="text-xs font-normal text-sand/60 line-through">
                       was {formatGBP(workbook.compareAtPrice)}
+                    </span>
+                  )}
+                </span>
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+              <Link
+                href={`/pay?product=${peace.id}`}
+                className="inline-flex w-full items-center justify-between gap-2 rounded-full border border-clay/30 bg-clay-pale px-5 py-3 text-sm font-medium text-forest transition-colors hover:border-clay"
+              >
+                <span className="flex items-center gap-2">
+                  <Heart className="h-4 w-4" /> Six-week workbook ·{' '}
+                  {formatGBP(peace.price)}
+                  {peace.compareAtPrice && (
+                    <span className="text-xs font-normal text-ink-muted line-through">
+                      was {formatGBP(peace.compareAtPrice)}
                     </span>
                   )}
                 </span>

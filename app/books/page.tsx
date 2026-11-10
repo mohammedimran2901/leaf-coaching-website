@@ -6,6 +6,7 @@ import {
   Check,
   Download,
   FileText,
+  Heart,
   Leaf,
   ShieldCheck,
 } from 'lucide-react'
@@ -16,20 +17,21 @@ import { formatGBP, getProduct } from '@/lib/products'
 export const metadata: Metadata = {
   title: 'Books & workbooks | Leaf Coaching',
   description:
-    'Be Melting Snow, the book by Aamna Khokhar, and Beyond the Role — a 29-page relational patterns workbook available as an instant PDF download. Launch offer: £3.99, usually £12.99.',
+    'Be Melting Snow, the book by Aamna Khokhar, plus two instant PDF workbooks: Beyond the Role — a 30-page relational patterns workbook (launch offer £3.99, usually £12.99) and How to Make Peace with Your Parents — a 34-page six-week programme (launch offer £4.99, usually £19.99).',
 }
 
 const inside = [
-  'Five parts and 29 pages of prompts, frameworks and space to write',
-  'The five adaptive pattern families — and the gifts and costs of each',
-  'The Drama Triangle, triggers and glimmers, and family mapping',
-  'Boundaries, receiving and repair: practising a different response',
-  'Appendices and further reading to keep going at your own pace',
+  'Five parts and 30 pages of prompts, frameworks and space to write',
+  'The five adaptive patterns — Achiever, Caretaker, Controller, Disappearing Self, and Disruptor or Distractor — and the gifts and costs of each',
+  'The Observer position, values, the Drama Triangle, and mapping your relational system',
+  'Boundaries, receiving, repair and a four-week practice',
+  'A quick observer sheet, research notes and references to keep going at your own pace',
 ]
 
 export default function BooksPage() {
   const book = getProduct('be-melting-snow')
   const workbook = getProduct('beyond-the-role')
+  const peace = getProduct('how-to-make-peace-with-your-parents')
 
   return (
     <main>
@@ -47,8 +49,8 @@ export default function BooksPage() {
               </h1>
               <p className="mt-7 max-w-2xl text-lg leading-relaxed text-ink-soft">
                 The ideas from our coaching room, made portable. A book for the
-                moments that ask for perspective — and a workbook for the
-                patterns that ask for honesty.
+                moments that ask for perspective — and workbooks for the
+                patterns and relationships that ask for honesty.
               </p>
             </div>
             <div className="md:col-span-4">
@@ -57,7 +59,7 @@ export default function BooksPage() {
                   <Download className="h-4 w-4" /> Digital delivery
                 </p>
                 <p className="mt-3 text-sm leading-relaxed text-ink-soft">
-                  The workbook arrives as a PDF the moment your payment clears.
+                  Your download arrives as a PDF the moment your payment clears.
                   No waiting, no postage — just a link you can save and return
                   to.
                 </p>
@@ -160,7 +162,7 @@ export default function BooksPage() {
                       </p>
                     </div>
                     <p className="text-[9px] uppercase tracking-widest text-ink-muted">
-                      29 pages · PDF
+                      30 pages · PDF
                     </p>
                   </div>
 
@@ -183,14 +185,15 @@ export default function BooksPage() {
                     </h2>
                     <p className="mt-4 text-[15px] leading-relaxed text-ink-soft">
                       You were never “too much” or “not enough”. You learned a
-                      role — and roles can be outgrown. A gentle, practical map
-                      for noticing the patterns you reach for, understanding what
-                      they protected, and choosing something different.
+                      role — and roles can be outgrown. This completed workbook
+                      maps the strategies you reach for under relational stress,
+                      what they once protected, what they cost now, and how to
+                      practise something more deliberate.
                     </p>
                     <ul className="mt-5 space-y-2 text-sm text-ink-soft">
                       <li className="flex gap-2">
                         <Check className="mt-0.5 h-4 w-4 shrink-0 text-forest" />
-                        Twenty-nine pages, five parts, space to write
+                        Thirty pages, five parts, space to write
                       </li>
                       <li className="flex gap-2">
                         <Check className="mt-0.5 h-4 w-4 shrink-0 text-forest" />
@@ -218,6 +221,98 @@ export default function BooksPage() {
                   </div>
                   <Link
                     href={`/pay?product=${workbook.id}`}
+                    className="btn-primary"
+                  >
+                    <Download className="h-4 w-4" /> Buy the workbook
+                  </Link>
+                </div>
+              </article>
+            )}
+
+            {peace && (
+              <article className="flex flex-col rounded-[2rem] border border-forest/20 bg-white/55 p-7 md:p-9 lg:col-span-2">
+                <div className="flex flex-col gap-7 sm:flex-row">
+                  <div className="relative flex aspect-[3/4] w-full max-w-[11.5rem] shrink-0 flex-col justify-between overflow-hidden rounded-l-sm rounded-r-xl bg-forest p-5 text-sand shadow-[0_30px_60px_-42px_rgba(20,40,25,0.9)]">
+                    <span className="absolute inset-y-0 left-0 w-2.5 bg-black/20" />
+                    <p className="flex items-center gap-1.5 text-[9px] uppercase tracking-widest2 text-clay-light">
+                      <Heart className="h-3 w-3" /> Six-week programme
+                    </p>
+                    <div>
+                      <p className="text-[9px] uppercase tracking-widest text-clay-light">
+                        Aamna Khokhar
+                      </p>
+                      <p className="mt-2 font-serif text-[1.45rem] leading-[0.98]">
+                        How to Make
+                        <br />
+                        Peace with
+                        <br />
+                        <em className="italic text-clay-light">Your Parents</em>
+                      </p>
+                      <p className="mt-3 text-[9px] uppercase tracking-widest text-sand/60">
+                        A self-guided workbook
+                      </p>
+                    </div>
+                    <p className="text-[9px] uppercase tracking-widest text-sand/60">
+                      34 pages · PDF
+                    </p>
+                  </div>
+
+                  <div className="flex flex-1 flex-col">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <p className="text-[11px] uppercase tracking-widest text-clay">
+                        New workbook
+                      </p>
+                      {peace.saleLabel && (
+                        <span className="rounded-full bg-clay px-2.5 py-1 text-[9px] uppercase tracking-widest text-sand">
+                          {peace.saleLabel}
+                        </span>
+                      )}
+                      <span className="rounded-full bg-forest px-2.5 py-1 text-[9px] uppercase tracking-widest text-sand">
+                        Instant download
+                      </span>
+                    </div>
+                    <h2 className="mt-2 font-serif text-3xl leading-tight text-ink">
+                      {peace.name}
+                    </h2>
+                    <p className="mt-4 text-[15px] leading-relaxed text-ink-soft">
+                      For the ones who love their parents and still find it
+                      complicated. A gentle six-week programme for honest
+                      noticing, wiser boundaries and peace in ordinary life —
+                      without forced forgiveness, shame or a deadline for
+                      healing.
+                    </p>
+                    <ul className="mt-5 grid gap-2 text-sm text-ink-soft sm:grid-cols-2">
+                      <li className="flex gap-2">
+                        <Check className="mt-0.5 h-4 w-4 shrink-0 text-forest" />
+                        Six weeks of teaching, reflection and body-based practice
+                      </li>
+                      <li className="flex gap-2">
+                        <Check className="mt-0.5 h-4 w-4 shrink-0 text-forest" />
+                        An Islamic reflection and small everyday invitation each
+                        week
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+
+                <div className="mt-auto flex flex-wrap items-end justify-between gap-4 border-t hairline pt-6">
+                  <div>
+                    <p className="text-[11px] uppercase tracking-widest text-ink-muted">
+                      {peace.meta}
+                    </p>
+                    <p className="mt-1 flex flex-wrap items-baseline gap-x-2 gap-y-1">
+                      <span className="font-serif text-4xl text-forest">
+                        {formatGBP(peace.price)}
+                      </span>
+                      {peace.compareAtPrice && (
+                        <span className="font-sans text-base text-ink-muted line-through">
+                          {formatGBP(peace.compareAtPrice)}
+                        </span>
+                      )}
+                    </p>
+                  </div>
+                  <Link
+                    href={`/pay?product=${peace.id}`}
                     className="btn-primary"
                   >
                     <Download className="h-4 w-4" /> Buy the workbook
