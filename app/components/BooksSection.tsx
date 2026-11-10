@@ -31,6 +31,30 @@ export default function BooksSection() {
             >
               Explore books &amp; workbooks <ArrowRight className="h-4 w-4" />
             </Link>
+            {workbook.preview && peace.preview && (
+              <p className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-ink-muted">
+                <span className="inline-flex items-center gap-1.5">
+                  <FileText className="h-3.5 w-3.5" /> Free first chapters:
+                </span>
+                <a
+                  href={workbook.preview.file}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-medium text-forest underline decoration-forest/30 underline-offset-4 hover:decoration-forest"
+                >
+                  Beyond the Role
+                </a>
+                <span aria-hidden="true">·</span>
+                <a
+                  href={peace.preview.file}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-medium text-forest underline decoration-forest/30 underline-offset-4 hover:decoration-forest"
+                >
+                  Peace with Your Parents
+                </a>
+              </p>
+            )}
           </div>
 
           <div className="space-y-4 md:col-span-7">

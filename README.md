@@ -101,6 +101,20 @@ of it invalidates the signature. The route streams the PDF with
   them the PDF from `private/`. Set `DOWNLOAD_SIGNING_SECRET` explicitly in
   production; rotating it invalidates all existing links.
 
+### Free chapter previews
+
+The first chapter of each workbook is also available as a free, public sample:
+
+- `public/downloads/beyond-the-role-chapter-1-preview.pdf` — cover, contents
+  and Part I (4 pages)
+- `public/downloads/how-to-make-peace-with-your-parents-chapter-1-preview.pdf`
+  — cover, contents and Week One (5 pages)
+
+These files are intentionally public and are linked from `/books` through each
+product's `preview` field in `lib/products.ts`. Unlike the paid PDFs, they live
+under `public/`. If a workbook is revised, regenerate both the paid file and its
+preview so the sample stays in step.
+
 ### Environment variables
 
 Copy `.env.example` to `.env.local`:
@@ -151,4 +165,5 @@ Never commit `.env.local`; it is ignored by git.
 - The checkout picker is grouped by `PRODUCT_GROUPS` from `lib/products.ts`
   (Coaching / Community / Books & workbooks).
 - The contact form posts to `app/api/contact/route.ts`.
-- Paid files belong in `private/downloads/`, never in `public/`.
+- Paid files belong in `private/downloads/`, never in `public/`. Free chapter
+  previews are the exception and live in `public/downloads/`.

@@ -24,6 +24,15 @@ export interface DigitalDownload {
   filename: string
 }
 
+export interface DigitalPreview {
+  /** Public path, relative to the site root. Free samples are safe to share. */
+  file: string
+  /** Label shown on the preview link. */
+  label: string
+  /** Number of pages in the sample PDF. */
+  pages: number
+}
+
 export interface Product {
   id: ProductId
   name: string
@@ -43,6 +52,8 @@ export interface Product {
   /** Digital items are delivered by signed download link after payment. */
   digital?: boolean
   download?: DigitalDownload
+  /** Free sample of the first chapter, served from /public. */
+  preview?: DigitalPreview
 }
 
 export const CURRENCY = 'GBP'
@@ -136,6 +147,11 @@ export const PRODUCTS: Product[] = [
       file: 'private/downloads/beyond-the-role.pdf',
       filename: 'Beyond-the-Role-Relational-Patterns-Workbook.pdf',
     },
+    preview: {
+      file: '/downloads/beyond-the-role-chapter-1-preview.pdf',
+      label: 'Read chapter one free',
+      pages: 4,
+    },
   },
   {
     id: 'how-to-make-peace-with-your-parents',
@@ -154,6 +170,11 @@ export const PRODUCTS: Product[] = [
     download: {
       file: 'private/downloads/how-to-make-peace-with-your-parents.pdf',
       filename: 'How-to-Make-Peace-with-Your-Parents-Workbook.pdf',
+    },
+    preview: {
+      file: '/downloads/how-to-make-peace-with-your-parents-chapter-1-preview.pdf',
+      label: 'Read chapter one free',
+      pages: 5,
     },
   },
 ]

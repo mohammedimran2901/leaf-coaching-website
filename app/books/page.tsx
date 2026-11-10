@@ -17,7 +17,7 @@ import { formatGBP, getProduct } from '@/lib/products'
 export const metadata: Metadata = {
   title: 'Books & workbooks | Leaf Coaching',
   description:
-    'Be Melting Snow, the book by Aamna Khokhar, plus two instant PDF workbooks: Beyond the Role — a 30-page relational patterns workbook (launch offer £3.99, usually £12.99) and How to Make Peace with Your Parents — a 34-page six-week programme (launch offer £4.99, usually £19.99).',
+    'Be Melting Snow, the book by Aamna Khokhar, plus two instant PDF workbooks: Beyond the Role — a 30-page relational patterns workbook (launch offer £3.99, usually £12.99) and How to Make Peace with Your Parents — a 34-page six-week programme (launch offer £4.99, usually £19.99). Read the first chapter of either workbook free.',
 }
 
 const inside = [
@@ -61,7 +61,8 @@ export default function BooksPage() {
                 <p className="mt-3 text-sm leading-relaxed text-ink-soft">
                   Your download arrives as a PDF the moment your payment clears.
                   No waiting, no postage — just a link you can save and return
-                  to.
+                  to. Prefer to try first? Read the first chapter of either
+                  workbook free below.
                 </p>
               </div>
             </div>
@@ -219,12 +220,30 @@ export default function BooksPage() {
                       )}
                     </p>
                   </div>
-                  <Link
-                    href={`/pay?product=${workbook.id}`}
-                    className="btn-primary"
-                  >
-                    <Download className="h-4 w-4" /> Buy the workbook
-                  </Link>
+                  <div className="flex w-full flex-wrap items-center gap-3 sm:w-auto">
+                    {workbook.preview && (
+                      <a
+                        href={workbook.preview.file}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-forest/25 px-5 py-3.5 text-sm font-medium tracking-wide text-forest transition-colors duration-500 hover:border-forest hover:bg-forest/5 sm:w-auto sm:px-6"
+                      >
+                        <FileText className="h-4 w-4" />
+                        <span className="whitespace-nowrap">
+                          {workbook.preview.label}
+                        </span>
+                        <span className="whitespace-nowrap text-ink-muted">
+                          · {workbook.preview.pages} pages
+                        </span>
+                      </a>
+                    )}
+                    <Link
+                      href={`/pay?product=${workbook.id}`}
+                      className="btn-primary w-full sm:w-auto"
+                    >
+                      <Download className="h-4 w-4" /> Buy the workbook
+                    </Link>
+                  </div>
                 </div>
               </article>
             )}
@@ -311,12 +330,30 @@ export default function BooksPage() {
                       )}
                     </p>
                   </div>
-                  <Link
-                    href={`/pay?product=${peace.id}`}
-                    className="btn-primary"
-                  >
-                    <Download className="h-4 w-4" /> Buy the workbook
-                  </Link>
+                  <div className="flex w-full flex-wrap items-center gap-3 sm:w-auto">
+                    {peace.preview && (
+                      <a
+                        href={peace.preview.file}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-forest/25 px-5 py-3.5 text-sm font-medium tracking-wide text-forest transition-colors duration-500 hover:border-forest hover:bg-forest/5 sm:w-auto sm:px-6"
+                      >
+                        <FileText className="h-4 w-4" />
+                        <span className="whitespace-nowrap">
+                          {peace.preview.label}
+                        </span>
+                        <span className="whitespace-nowrap text-ink-muted">
+                          · {peace.preview.pages} pages
+                        </span>
+                      </a>
+                    )}
+                    <Link
+                      href={`/pay?product=${peace.id}`}
+                      className="btn-primary w-full sm:w-auto"
+                    >
+                      <Download className="h-4 w-4" /> Buy the workbook
+                    </Link>
+                  </div>
                 </div>
               </article>
             )}
