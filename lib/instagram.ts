@@ -26,9 +26,10 @@ export function isInstagramConfigured(): boolean {
 /**
  * Reads the latest media for the Leaf Coaching Instagram account.
  *
- * Uses the official Instagram Graph API, so it needs a long-lived access token
- * with `instagram_basic` (and `pages_read_engagement` when using a Facebook
- * Page-linked account). Without a token the homepage shows its designed
+ * Uses the official Instagram API, so it needs a long-lived access token. With
+ * Instagram Login, request `instagram_business_basic`; with a Facebook
+ * Page-linked professional account, request `instagram_basic` and
+ * `pages_read_engagement`. Without a token the homepage shows its designed
  * "follow us" panel instead of an empty grid.
  */
 export async function getInstagramPosts(limit = 4): Promise<InstagramPost[]> {

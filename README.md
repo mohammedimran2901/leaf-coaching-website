@@ -223,7 +223,8 @@ completed payment, and the details remain in the server logs for follow-up.
 Set `INSTAGRAM_ACCESS_TOKEN` (and optionally `INSTAGRAM_USER_ID`) to show the
 latest four posts on the homepage. Without a token, the section renders a
 designed "follow us" panel linking to
-<https://www.instagram.com/leaf_coaching>.
+<https://www.instagram.com/leaf_coaching>. Redeploy after adding these variables
+so the build can pick them up.
 
 ## Tech stack
 
